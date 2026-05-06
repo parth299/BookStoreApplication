@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using BookStoreApplication.Web;
+using BookStoreApplication.Web.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookStoreApplication.Web.Data;
