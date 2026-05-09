@@ -48,6 +48,7 @@ wwwroot/dist/
 Thumbs.db
 
 # Development settings
+appsettings.json
 appsettings.Development.json
 
 # Environment files
@@ -83,4 +84,6 @@ node_modules/
 *.temp
 
 # Generated files
-Generated/
+Generated/appsetting.json
+demo.cs
+appsettings.json
