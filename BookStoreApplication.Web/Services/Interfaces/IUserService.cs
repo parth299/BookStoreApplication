@@ -1,4 +1,5 @@
-using BookStoreApplication.Web.DTOs;
+using BookStoreApplication.Web.DTOs.Author;
+using BookStoreApplication.Web.DTOs.User;
 using BookStoreApplication.Web.Models;
 
 namespace BookStoreApplication.Web.services

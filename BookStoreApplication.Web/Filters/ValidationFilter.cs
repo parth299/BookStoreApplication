@@ -39,7 +39,7 @@ namespace BookStoreApplication.Web.Filters
                     string.Join("; ", errors));
 
                 // Return standardized error response
-                var response = ApiResponse.Fail<object>(
+                var response = ApiResponse<object>.FailResponse(
                     "Validation failed. Please check your input.",
                     errors);
 
