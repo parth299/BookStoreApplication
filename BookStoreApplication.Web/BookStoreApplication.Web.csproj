@@ -1,50 +1,54 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
-	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
-		<Nullable>enable</Nullable>
-		<ImplicitUsings>enable</ImplicitUsings>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
 
-	<ItemGroup>
+  <ItemGroup>
 
-		<!-- Swagger -->
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <!-- Swagger -->
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
 
-		<!-- Entity Framework -->
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.22" />
+    <!-- OpenAPI -->
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.22" />
 
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.22">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>
-				runtime; build; native; contentfiles; analyzers; buildtransitive
-			</IncludeAssets>
-		</PackageReference>
+    <!-- Entity Framework -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.22" />
 
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.22">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>
-				runtime; build; native; contentfiles; analyzers; buildtransitive
-			</IncludeAssets>
-		</PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.22">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>
+        runtime; build; native; contentfiles; analyzers; buildtransitive
+      </IncludeAssets>
+    </PackageReference>
 
-		<!-- AutoMapper -->
-		<PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.22">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>
+        runtime; build; native; contentfiles; analyzers; buildtransitive
+      </IncludeAssets>
+    </PackageReference>
 
-		<!-- FluentValidation -->
-		<PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <!-- AutoMapper -->
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
 
-		<!-- JWT -->
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.22" />
+    <!-- FluentValidation -->
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
 
-		<!-- Serilog -->
-		<PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
-		<PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
-		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <!-- JWT -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.22" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.16.0" />
 
-		<!-- Memory Cache -->
-		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
+    <!-- Serilog -->
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
 
-	</ItemGroup>
+    <!-- Memory Cache -->
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
+
+  </ItemGroup>
 
 </Project>

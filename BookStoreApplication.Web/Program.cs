@@ -1,17 +1,23 @@
+using BookStoreApplication.Web.Configurations;
 using BookStoreApplication.Web.Data;
+using BookStoreApplication.Web.DTOs;
 using BookStoreApplication.Web.Middleware;
+using BookStoreApplication.Web.Models;
+using BookStoreApplication.Web.Repositories;
 using BookStoreApplication.Web.Repositories.Implementations;
 using BookStoreApplication.Web.Repositories.Interfaces;
 using BookStoreApplication.Web.Services;
+using BookStoreApplication.Web.services;
 using BookStoreApplication.Web.Validators;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,8 +30,7 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File(
         "Logs/log-.txt",
-        rollingInterval:
-        RollingInterval.Day)
+        rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
 builder.Host.UseSerilog();
@@ -36,7 +41,16 @@ builder.Host.UseSerilog();
 // ======================================================
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("BookDB")));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("BookDB")));
+
+
+// ======================================================
+// JWT CONFIGURATION
+// ======================================================
+
+builder.Services.Configure<JwtOptions>(
+    builder.Configuration.GetSection("Jwt"));
 
 
 // ======================================================
@@ -44,8 +58,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // ======================================================
 
 builder.Services.AddAutoMapper(
-    AppDomain.CurrentDomain
-        .GetAssemblies());
+    AppDomain.CurrentDomain.GetAssemblies());
 
 
 // ======================================================
@@ -75,6 +88,10 @@ builder.Services.AddScoped<
     IPurchaseLogRepository,
     PurchaseLogRepository>();
 
+builder.Services.AddScoped<UserReporitory>();
+
+builder.Services.AddScoped<PermRoleRepository>();
+
 
 // ======================================================
 // SERVICES
@@ -96,6 +113,23 @@ builder.Services.AddSingleton<
     IReservationService,
     ReservationService>();
 
+builder.Services.AddScoped<
+    IUserService,
+    UserService>();
+
+builder.Services.AddScoped<
+    IJwtTokenService,
+    JwtTokenService>();
+
+
+// ======================================================
+// PASSWORD HASHER
+// ======================================================
+
+builder.Services.AddScoped<
+    IPasswordHasher<User>,
+    PasswordHasher<User>>();
+
 
 // ======================================================
 // FLUENT VALIDATION
@@ -108,15 +142,18 @@ builder.Services
     .AddValidatorsFromAssemblyContaining<
         InventoryValidator>();
 
+builder.Services
+    .AddValidatorsFromAssemblyContaining<
+        RegisterUserDTO>();
+
 
 // ======================================================
-// JWT AUTH
+// JWT AUTHENTICATION
 // ======================================================
 
 builder.Services
     .AddAuthentication(
-        JwtBearerDefaults
-            .AuthenticationScheme)
+        JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters =
@@ -154,7 +191,47 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddSwaggerGen();
+
+// ======================================================
+// SWAGGER
+// ======================================================
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "BookStore",
+        Version = "v1"
+    });
+
+    c.AddSecurityDefinition("Bearer",
+        new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description =
+                "Enter 'Bearer' followed by your JWT token."
+        });
+
+    c.AddSecurityRequirement(
+        new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                Array.Empty<string>()
+            }
+        });
+});
 
 
 // ======================================================
@@ -168,8 +245,7 @@ var app = builder.Build();
 // MIDDLEWARE
 // ======================================================
 
-app.UseMiddleware<
-    ExceptionMiddleware>();
+app.UseMiddleware<ExceptionMiddleware>();
 
 
 if (app.Environment.IsDevelopment())
@@ -188,4 +264,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
