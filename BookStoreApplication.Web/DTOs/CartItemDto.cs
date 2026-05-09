@@ -1,0 +1,9 @@
+﻿namespace BookStoreApplication.Web.DTOs
+{
+    public class CartItemDto
+    {
+        public int UserId { get; set; }
+        public string ISBN { get; set; } = null!;
+        public int Quantity { get; set; }
+    }
+}
