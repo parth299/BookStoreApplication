@@ -1,14 +1,19 @@
 using BookStoreApplication.Web.Configurations;
 using BookStoreApplication.Web.Data;
 using BookStoreApplication.Web.DTOs;
+using BookStoreApplication.Web.DTOs.ReviewsAndRatings;
 using BookStoreApplication.Web.Middleware;
+using BookStoreApplication.Web.Middleware.RatingAndReviewers;
 using BookStoreApplication.Web.Models;
 using BookStoreApplication.Web.Repositories;
 using BookStoreApplication.Web.Repositories.Implementations;
 using BookStoreApplication.Web.Repositories.Interfaces;
+using BookStoreApplication.Web.Repositories.ReviewAndRatings;
 using BookStoreApplication.Web.Services;
+using BookStoreApplication.Web.Services.ReviewsAndRatings;
 using BookStoreApplication.Web.services;
 using BookStoreApplication.Web.Validators;
+using BookStoreApplication.Web.Validators.RatingAndReviewers;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -88,6 +93,14 @@ builder.Services.AddScoped<
     IPurchaseLogRepository,
     PurchaseLogRepository>();
 
+builder.Services.AddScoped<
+    IBookReviewRepository,
+    BookReviewRepository>();
+
+builder.Services.AddScoped<
+    IReviewerRepository,
+    ReviewerRepository>();
+
 builder.Services.AddScoped<UserReporitory>();
 
 builder.Services.AddScoped<PermRoleRepository>();
@@ -108,6 +121,14 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IPurchaseLogService,
     PurchaseLogService>();
+
+builder.Services.AddScoped<
+    IBookReviewService,
+    BookReviewService>();
+
+builder.Services.AddScoped<
+    IReviewerService,
+    ReviewerService>();
 
 builder.Services.AddSingleton<
     IReservationService,
@@ -145,6 +166,14 @@ builder.Services
 builder.Services
     .AddValidatorsFromAssemblyContaining<
         RegisterUserDTO>();
+
+builder.Services.AddScoped<
+    IValidator<CreateReviewRequestDto>,
+    CreateReviewRequestDtoValidator>();
+
+builder.Services.AddScoped<
+    IValidator<CreateReviewerRequestDto>,
+    CreateReviewerRequestDtoValidator>();
 
 
 // ======================================================
@@ -246,6 +275,8 @@ var app = builder.Build();
 // ======================================================
 
 app.UseMiddleware<ExceptionMiddleware>();
+
+app.UseExceptionHandlingMiddleware();
 
 
 if (app.Environment.IsDevelopment())
