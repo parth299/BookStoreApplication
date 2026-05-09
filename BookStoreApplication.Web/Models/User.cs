@@ -17,7 +17,10 @@ public partial class User
 
     public string Password { get; set; } = null!;
 
+    public string PasswordHash { get; set; } = null!;
+
     public int? RoleNumber { get; set; }
+    public string PasswordHash { get; set; } = null;
 
     public virtual ICollection<Purchaselog> Purchaselogs { get; set; } = new List<Purchaselog>();
 

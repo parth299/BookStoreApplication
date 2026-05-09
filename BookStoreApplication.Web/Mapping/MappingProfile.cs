@@ -1,7 +1,6 @@
 using AutoMapper;
-using BookStoreApplication.Web.Data;
-using BookStoreApplication.Web.Models;
 using BookStoreApplication.Web.DTOs;
+using BookStoreApplication.Web.Models;
 
 namespace BookStoreApplication.Web.Mapping
 {
@@ -9,17 +8,38 @@ namespace BookStoreApplication.Web.Mapping
     {
         public MappingProfile()
         {
-            // Author mappings
-            CreateMap<AuthorRequestDTO, Author>();
+
             CreateMap<Author, AuthorResponseDTO>();
+
             CreateMap<Author, AuthorWithBooksResponseDTO>();
 
-            // Category mappings (Note: database uses CatID, CatDescription)
             CreateMap<CategoryRequestDto, Category>()
-                .ForMember(dest => dest.CatDescription, opt => opt.MapFrom(src => src.CatDescription));
+                .ForMember(
+                    dest => dest.CatDescription,
+                    opt => opt.MapFrom(src => src.CatDescription));
+
             CreateMap<Category, CategoryResponseDto>()
-                .ForMember(dest => dest.CatId, opt => opt.MapFrom(src => src.CatId))
-                .ForMember(dest => dest.CatDescription, opt => opt.MapFrom(src => src.CatDescription));
+                .ForMember(
+                    dest => dest.CatId,
+                    opt => opt.MapFrom(src => src.CatId))
+                .ForMember(
+                    dest => dest.CatDescription,
+                    opt => opt.MapFrom(src => src.CatDescription));
+
+
+            CreateMap<Inventory, InventoryDto>()
+                .ReverseMap();
+
+
+
+            CreateMap<Shoppingcart, CartItemDto>()
+                .ReverseMap();
+
+
+          
+
+            CreateMap<Purchaselog, PurchaseDto>()
+                .ReverseMap();
         }
     }
 }

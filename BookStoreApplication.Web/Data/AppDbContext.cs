@@ -330,8 +330,7 @@ public partial class AppDbContext : DbContext
                 .HasForeignKey(d => d.RoleNumber)
                 .HasConstraintName("FK_user_RoleNumber");
         });
-
-        OnModelCreatingPartial(modelBuilder);
+        
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
