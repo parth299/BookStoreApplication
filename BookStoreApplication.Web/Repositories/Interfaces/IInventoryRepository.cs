@@ -1,4 +1,4 @@
-﻿using BookStoreApplication.Web.DTOs;
+﻿using BookStoreApplication.Web.DTOs.Inventory;
 using BookStoreApplication.Web.Models;
 
 namespace BookStoreApplication.Web.Repositories.Interfaces

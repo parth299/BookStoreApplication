@@ -3,12 +3,13 @@ using Moq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BookStoreApplication.Web.Controllers;
 using BookStoreApplication.Web.Services;
-using BookStoreApplication.Web.DTOs;
 using BookStoreApplication.Web.Models;
 using BookStoreApplication.Web.Exceptions;
 using BookStoreApplication.Web.Wrappers;
+using BookStoreApplication.Web.Controllers.Auth;
+using BookStoreApplication.Web.DTOs.Author;
+using BookStoreApplication.Web.Services.Author;
 
 namespace BookStoreApplication.Tests.Controllers
 {

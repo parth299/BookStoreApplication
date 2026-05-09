@@ -4,6 +4,7 @@ using BookStoreApplication.Web.Exceptions;
 using BookStoreApplication.Web.Mapping;
 using BookStoreApplication.Web.Models;
 using Microsoft.EntityFrameworkCore;
+using BookStoreApplication.Web.Exceptions.RatingsAndReviewers; 
 
 namespace BookStoreApplication.Web.Repositories.ReviewAndRatings
 {

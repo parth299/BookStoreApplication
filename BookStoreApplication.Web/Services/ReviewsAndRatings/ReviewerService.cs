@@ -2,6 +2,7 @@ using BookStoreApplication.Web.DTOs.ReviewsAndRatings;
 using BookStoreApplication.Web.Exceptions;
 using BookStoreApplication.Web.Repositories.ReviewAndRatings;
 using FluentValidation;
+using BookStoreApplication.Web.Exceptions.RatingsAndReviewers;
 
 namespace BookStoreApplication.Web.Services.ReviewsAndRatings
 {

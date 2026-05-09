@@ -1,5 +1,7 @@
 using AutoMapper;
-using BookStoreApplication.Web.DTOs;
+using BookStoreApplication.Web.DTOs.Author;
+using BookStoreApplication.Web.DTOs.Category;
+using BookStoreApplication.Web.DTOs.Inventory;
 using BookStoreApplication.Web.Models;
 
 namespace BookStoreApplication.Web.Mapping

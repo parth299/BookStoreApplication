@@ -2,12 +2,12 @@ using Xunit;
 using Moq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BookStoreApplication.Web.Controllers;
-using BookStoreApplication.Web.Services;
-using BookStoreApplication.Web.DTOs;
 using BookStoreApplication.Web.Models;
 using BookStoreApplication.Web.Exceptions;
 using BookStoreApplication.Web.Wrappers;
+using BookStoreApplication.Web.Controllers.Category;
+using BookStoreApplication.Web.DTOs.Category;
+using BookStoreApplication.Web.Services.Category;
 
 
 namespace BookStoreApplication.Tests.Controllers
