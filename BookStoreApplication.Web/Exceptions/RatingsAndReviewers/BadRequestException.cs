@@ -1,4 +1,4 @@
-namespace BookStoreApplication.Web.Exceptions
+namespace BookStoreApplication.Web.Exceptions.RatingsAndReviewers
 {
     public class BadRequestException : ApiException
     {

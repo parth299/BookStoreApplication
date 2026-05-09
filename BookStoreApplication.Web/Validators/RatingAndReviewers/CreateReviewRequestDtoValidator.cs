@@ -1,7 +1,7 @@
 using BookStoreApplication.Web.DTOs.ReviewsAndRatings;
 using FluentValidation;
 
-namespace BookStoreApplication.Web.Validators
+namespace BookStoreApplication.Web.Validators.RatingAndReviewers
 {
     public class CreateReviewRequestDtoValidator : AbstractValidator<CreateReviewRequestDto>
     {

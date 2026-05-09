@@ -1,8 +1,8 @@
 using System.Text.Json;
 using BookStoreApplication.Web.DTOs.ReviewsAndRatings;
-using BookStoreApplication.Web.Exceptions;
+using BookStoreApplication.Web.Exceptions.RatingsAndReviewers;
 
-namespace BookStoreApplication.Web.Middleware
+namespace BookStoreApplication.Web.Middleware.RatingAndReviewers
 {
     public class ExceptionHandlingMiddleware
     {

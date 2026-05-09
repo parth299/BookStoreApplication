@@ -1,4 +1,4 @@
-namespace BookStoreApplication.Web.Middleware
+namespace BookStoreApplication.Web.Middleware.RatingAndReviewers
 {
     public static class ExceptionHandlingMiddlewareExtensions
     {

@@ -1,4 +1,4 @@
-namespace BookStoreApplication.Web.Exceptions
+namespace BookStoreApplication.Web.Exceptions.RatingsAndReviewers
 {
     public abstract class ApiException : Exception
     {

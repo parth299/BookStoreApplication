@@ -1,9 +1,9 @@
 using BookStoreApplication.Web.Data;
 using BookStoreApplication.Web.DTOs.ReviewsAndRatings;
-using BookStoreApplication.Web.Middleware;
+using BookStoreApplication.Web.Middleware.RatingAndReviewers;
 using BookStoreApplication.Web.Repositories.ReviewAndRatings;
 using BookStoreApplication.Web.Services.ReviewsAndRatings;
-using BookStoreApplication.Web.Validators;
+using BookStoreApplication.Web.Validators.RatingAndReviewers;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
