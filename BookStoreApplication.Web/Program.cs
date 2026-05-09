@@ -1,39 +1,297 @@
+using BookStoreApplication.Web.Configurations;
 using BookStoreApplication.Web.Data;
+using BookStoreApplication.Web.DTOs;
 using BookStoreApplication.Web.DTOs.ReviewsAndRatings;
+using BookStoreApplication.Web.Middleware;
 using BookStoreApplication.Web.Middleware.RatingAndReviewers;
+using BookStoreApplication.Web.Models;
+using BookStoreApplication.Web.Repositories;
+using BookStoreApplication.Web.Repositories.Implementations;
+using BookStoreApplication.Web.Repositories.Interfaces;
 using BookStoreApplication.Web.Repositories.ReviewAndRatings;
+using BookStoreApplication.Web.Services;
 using BookStoreApplication.Web.Services.ReviewsAndRatings;
+using BookStoreApplication.Web.services;
+using BookStoreApplication.Web.Validators;
 using BookStoreApplication.Web.Validators.RatingAndReviewers;
 using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Serilog;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+// ======================================================
+// SERILOG
+// ======================================================
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File(
+        "Logs/log-.txt",
+        rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
+
+// ======================================================
+// DB CONTEXT
+// ======================================================
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("BookDB")));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("BookDB")));
+
+
+// ======================================================
+// JWT CONFIGURATION
+// ======================================================
+
+builder.Services.Configure<JwtOptions>(
+    builder.Configuration.GetSection("Jwt"));
+
+
+// ======================================================
+// AUTOMAPPER
+// ======================================================
+
+builder.Services.AddAutoMapper(
+    AppDomain.CurrentDomain.GetAssemblies());
+
+
+// ======================================================
+// MEMORY CACHE
+// ======================================================
+
+builder.Services.AddMemoryCache();
+
+
+// ======================================================
+// REPOSITORIES
+// ======================================================
+
+builder.Services.AddScoped<
+    IInventoryRepository,
+    InventoryRepository>();
+
+builder.Services.AddScoped<
+    IUserRepository,
+    UserRepository>();
+
+builder.Services.AddScoped<
+    IShoppingCartRepository,
+    ShoppingCartRepository>();
+
+builder.Services.AddScoped<
+    IPurchaseLogRepository,
+    PurchaseLogRepository>();
+
+builder.Services.AddScoped<
+    IBookReviewRepository,
+    BookReviewRepository>();
+
+builder.Services.AddScoped<
+    IReviewerRepository,
+    ReviewerRepository>();
+
+builder.Services.AddScoped<UserReporitory>();
+
+builder.Services.AddScoped<PermRoleRepository>();
+
+
+// ======================================================
+// SERVICES
+// ======================================================
+
+builder.Services.AddScoped<
+    IInventoryService,
+    InventoryService>();
+
+builder.Services.AddScoped<
+    IShoppingCartService,
+    ShoppingCartService>();
+
+builder.Services.AddScoped<
+    IPurchaseLogService,
+    PurchaseLogService>();
+
+builder.Services.AddScoped<
+    IBookReviewService,
+    BookReviewService>();
+
+builder.Services.AddScoped<
+    IReviewerService,
+    ReviewerService>();
+
+builder.Services.AddSingleton<
+    IReservationService,
+    ReservationService>();
+
+builder.Services.AddScoped<
+    IUserService,
+    UserService>();
+
+builder.Services.AddScoped<
+    IJwtTokenService,
+    JwtTokenService>();
+
+
+// ======================================================
+// PASSWORD HASHER
+// ======================================================
+
+builder.Services.AddScoped<
+    IPasswordHasher<User>,
+    PasswordHasher<User>>();
+
+
+// ======================================================
+// FLUENT VALIDATION
+// ======================================================
+
+builder.Services
+    .AddFluentValidationAutoValidation();
+
+builder.Services
+    .AddValidatorsFromAssemblyContaining<
+        InventoryValidator>();
+
+builder.Services
+    .AddValidatorsFromAssemblyContaining<
+        RegisterUserDTO>();
+
+builder.Services.AddScoped<
+    IValidator<CreateReviewRequestDto>,
+    CreateReviewRequestDtoValidator>();
+
+builder.Services.AddScoped<
+    IValidator<CreateReviewerRequestDto>,
+    CreateReviewerRequestDtoValidator>();
+
+
+// ======================================================
+// JWT AUTHENTICATION
+// ======================================================
+
+builder.Services
+    .AddAuthentication(
+        JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters =
+            new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+
+                ValidateAudience = true,
+
+                ValidateLifetime = true,
+
+                ValidateIssuerSigningKey = true,
+
+                ValidIssuer =
+                    builder.Configuration["Jwt:Issuer"],
+
+                ValidAudience =
+                    builder.Configuration["Jwt:Audience"],
+
+                IssuerSigningKey =
+                    new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(
+                            builder.Configuration["Jwt:Key"]!))
+            };
+    });
+
+builder.Services.AddAuthorization();
+
+
+// ======================================================
+// CONTROLLERS
+// ======================================================
 
 builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IBookReviewRepository, BookReviewRepository>();
-builder.Services.AddScoped<IBookReviewService, BookReviewService>();
-builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
-builder.Services.AddScoped<IReviewerService, ReviewerService>();
 
-builder.Services.AddScoped<IValidator<CreateReviewRequestDto>, CreateReviewRequestDtoValidator>();
-builder.Services.AddScoped<IValidator<CreateReviewerRequestDto>, CreateReviewerRequestDtoValidator>();
+// ======================================================
+// SWAGGER
+// ======================================================
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "BookStore",
+        Version = "v1"
+    });
+
+    c.AddSecurityDefinition("Bearer",
+        new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description =
+                "Enter 'Bearer' followed by your JWT token."
+        });
+
+    c.AddSecurityRequirement(
+        new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                Array.Empty<string>()
+            }
+        });
+});
+
+
+// ======================================================
+// BUILD
+// ======================================================
 
 var app = builder.Build();
+
+
+// ======================================================
+// MIDDLEWARE
+// ======================================================
+
+app.UseMiddleware<ExceptionMiddleware>();
+
+app.UseExceptionHandlingMiddleware();
+
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
+
     app.UseSwaggerUI();
 }
 
-app.UseExceptionHandlingMiddleware();
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+
 app.UseAuthorization();
+
 app.MapControllers();
+
 app.Run();
