@@ -2,6 +2,8 @@ using BookStoreApplication.Web.Configurations;
 using BookStoreApplication.Web.Data;
 using BookStoreApplication.Web.DTOs;
 using BookStoreApplication.Web.DTOs.ReviewsAndRatings;
+using BookStoreApplication.Web.Filters;
+using BookStoreApplication.Web.Mapping;
 using BookStoreApplication.Web.Middleware;
 using BookStoreApplication.Web.Middleware.RatingAndReviewers;
 using BookStoreApplication.Web.Models;
@@ -26,11 +28,6 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-// ======================================================
-// SERILOG
-// ======================================================
-
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File(
@@ -40,42 +37,38 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
-
-// ======================================================
-// DB CONTEXT
-// ======================================================
-
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("BookDB")));
 
-
-// ======================================================
-// JWT CONFIGURATION
-// ======================================================
-
 builder.Services.Configure<JwtOptions>(
     builder.Configuration.GetSection("Jwt"));
 
-
-// ======================================================
-// AUTOMAPPER
-// ======================================================
-
 builder.Services.AddAutoMapper(
-    AppDomain.CurrentDomain.GetAssemblies());
-
-
-// ======================================================
-// MEMORY CACHE
-// ======================================================
+    typeof(MappingProfile));
 
 builder.Services.AddMemoryCache();
 
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ValidationFilter>();
 
-// ======================================================
-// REPOSITORIES
-// ======================================================
+    options.Filters.Add<ApiExceptionFilter>();
+})
+.ConfigureApiBehaviorOptions(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddScoped<
+    IAuthorRepository,
+    AuthorRepository>();
+
+builder.Services.AddScoped<
+    ICategoryRepository,
+    CategoryRepository>();
 
 builder.Services.AddScoped<
     IInventoryRepository,
@@ -105,10 +98,13 @@ builder.Services.AddScoped<UserReporitory>();
 
 builder.Services.AddScoped<PermRoleRepository>();
 
+builder.Services.AddScoped<
+    IAuthorService,
+    AuthorService>();
 
-// ======================================================
-// SERVICES
-// ======================================================
+builder.Services.AddScoped<
+    ICategoryService,
+    CategoryService>();
 
 builder.Services.AddScoped<
     IInventoryService,
@@ -142,19 +138,12 @@ builder.Services.AddScoped<
     IJwtTokenService,
     JwtTokenService>();
 
-
-// ======================================================
-// PASSWORD HASHER
-// ======================================================
+builder.Services.AddScoped<
+    FileUploadService>();
 
 builder.Services.AddScoped<
     IPasswordHasher<User>,
     PasswordHasher<User>>();
-
-
-// ======================================================
-// FLUENT VALIDATION
-// ======================================================
 
 builder.Services
     .AddFluentValidationAutoValidation();
@@ -168,6 +157,14 @@ builder.Services
         RegisterUserDTO>();
 
 builder.Services.AddScoped<
+    IValidator<AuthorRequestDTO>,
+    AuthorValidator>();
+
+builder.Services.AddScoped<
+    IValidator<CategoryRequestDto>,
+    CategoryValidator>();
+
+builder.Services.AddScoped<
     IValidator<CreateReviewRequestDto>,
     CreateReviewRequestDtoValidator>();
 
@@ -175,10 +172,7 @@ builder.Services.AddScoped<
     IValidator<CreateReviewerRequestDto>,
     CreateReviewerRequestDtoValidator>();
 
-
-// ======================================================
-// JWT AUTHENTICATION
-// ======================================================
+builder.Services.AddScoped<LogActionFilter>();
 
 builder.Services
     .AddAuthentication(
@@ -211,20 +205,6 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
-
-// ======================================================
-// CONTROLLERS
-// ======================================================
-
-builder.Services.AddControllers();
-
-builder.Services.AddEndpointsApiExplorer();
-
-
-// ======================================================
-// SWAGGER
-// ======================================================
-
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -233,7 +213,8 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1"
     });
 
-    c.AddSecurityDefinition("Bearer",
+    c.AddSecurityDefinition(
+        "Bearer",
         new OpenApiSecurityScheme
         {
             Name = "Authorization",
@@ -251,33 +232,25 @@ builder.Services.AddSwaggerGen(c =>
             {
                 new OpenApiSecurityScheme
                 {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    }
+                    Reference =
+                        new OpenApiReference
+                        {
+                            Type =
+                                ReferenceType.SecurityScheme,
+
+                            Id = "Bearer"
+                        }
                 },
                 Array.Empty<string>()
             }
         });
 });
 
-
-// ======================================================
-// BUILD
-// ======================================================
-
 var app = builder.Build();
-
-
-// ======================================================
-// MIDDLEWARE
-// ======================================================
 
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseExceptionHandlingMiddleware();
-
 
 if (app.Environment.IsDevelopment())
 {
@@ -287,6 +260,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseStaticFiles();
 
 app.UseAuthentication();
 

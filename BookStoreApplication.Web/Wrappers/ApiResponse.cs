@@ -1,4 +1,4 @@
-﻿namespace BookStoreApplication.Web.Wrappers
+namespace BookStoreApplication.Web.Wrappers
 {
     public class ApiResponse<T>
     {
@@ -10,8 +10,9 @@
 
         public List<string>? Errors { get; set; }
 
-        // SUCCESS WITH DATA
-        public static ApiResponse<T> SuccessResponse(T data, string message = "Success")
+        public static ApiResponse<T> SuccessResponse(
+            T data,
+            string message = "Success")
         {
             return new ApiResponse<T>
             {
@@ -21,8 +22,8 @@
             };
         }
 
-        // SUCCESS WITHOUT DATA
-        public static ApiResponse<T> MessageResponse(string message)
+        public static ApiResponse<T> MessageResponse(
+            string message)
         {
             return new ApiResponse<T>
             {
@@ -31,13 +32,15 @@
             };
         }
 
-        public static ApiResponse<T> FailResponse(string message, List<string>? errors = null)
+        public static ApiResponse<T> FailResponse(
+            string message,
+            List<string>? errors = null)
         {
             return new ApiResponse<T>
             {
                 Success = false,
                 Message = message,
-                Errors = errors
+                Errors = errors ?? new List<string>()
             };
         }
     }

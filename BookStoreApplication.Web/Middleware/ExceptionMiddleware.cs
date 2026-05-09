@@ -1,4 +1,4 @@
-﻿using BookStoreApplication.Web.Exceptions;
+using BookStoreApplication.Web.Exceptions;
 using BookStoreApplication.Web.Wrappers;
 using System.Net;
 using System.Text.Json;
@@ -9,9 +9,15 @@ namespace BookStoreApplication.Web.Middleware
     {
         private readonly RequestDelegate _next;
 
-        public ExceptionMiddleware(RequestDelegate next)
+        private readonly ILogger<ExceptionMiddleware> _logger;
+
+        public ExceptionMiddleware(
+            RequestDelegate next,
+            ILogger<ExceptionMiddleware> logger)
         {
             _next = next;
+
+            _logger = logger;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -22,41 +28,49 @@ namespace BookStoreApplication.Web.Middleware
             }
             catch (Exception ex)
             {
-                await HandleExceptionAsync(context,ex);
+                _logger.LogError(
+                    ex,
+                    "Unhandled exception occurred");
+
+                await HandleExceptionAsync(
+                    context,
+                    ex);
             }
         }
 
-        private static async Task HandleExceptionAsync(HttpContext context,Exception ex)
+        private static async Task HandleExceptionAsync(
+            HttpContext context,
+            Exception exception)
         {
-            context.Response.ContentType = "application/json";
+            context.Response.ContentType =
+                "application/json";
 
-            var response = new ApiResponse<string>();
-
-            switch (ex)
+            int statusCode = exception switch
             {
-                case NotFoundException:
-                      context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                NotFoundException =>
+                    (int)HttpStatusCode.NotFound,
 
-                    response = ApiResponse<string>.FailResponse(ex.Message);
+                BadRequestException =>
+                    (int)HttpStatusCode.BadRequest,
 
-                    break;
+                UnauthorizedException =>
+                    (int)HttpStatusCode.Unauthorized,
 
-                case BadRequestException:
-                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                _ =>
+                    (int)HttpStatusCode.InternalServerError
+            };
 
-                    response = ApiResponse<string>.FailResponse(ex.Message);
+            context.Response.StatusCode = statusCode;
 
-                    break;
+            ApiResponse<string> response =
+                exception is BaseException
+                    ? ApiResponse<string>.FailResponse(
+                        exception.Message)
+                    : ApiResponse<string>.FailResponse(
+                        "An unexpected error occurred.");
 
-                default:
-                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-
-                    response = ApiResponse<string>.FailResponse(ex.Message);
-
-                    break;
-            }
-
-            var json = JsonSerializer.Serialize(response);
+            var json =
+                JsonSerializer.Serialize(response);
 
             await context.Response.WriteAsync(json);
         }
