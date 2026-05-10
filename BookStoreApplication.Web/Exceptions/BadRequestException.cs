@@ -1,8 +1,11 @@
-namespace BookStoreApplication.Web.Exceptions;
-
-public class BadRequestException : Exception
+// File: BookStoreApplication.Common/Exceptions/BadRequestException.cs
+using BookStoreApplication.Web.Exceptions;
+namespace BookStoreApplication.Web.Exceptions
 {
-    public BadRequestException(string message) : base(message)
+    public class BadRequestException : BaseException
     {
+        public BadRequestException(string message) : base(message, 400)
+        {
+        }
     }
 }
