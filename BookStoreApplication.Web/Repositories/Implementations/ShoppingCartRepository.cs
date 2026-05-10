@@ -5,26 +5,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookStoreApplication.Web.Repositories.Implementations
 {
-    public class ShoppingCartRepository
-    : IShoppingCartRepository
+    public class ShoppingCartRepository: IShoppingCartRepository
     {
         private readonly AppDbContext _context;
 
-        public ShoppingCartRepository(
-            AppDbContext context)
+        public ShoppingCartRepository(AppDbContext context)
         {
             _context = context;
         }
 
-        public async Task AddAsync(
-            Shoppingcart cart)
+        public async Task AddAsync(Shoppingcart cart)
         {
-            await _context.Shoppingcarts
-                .AddAsync(cart);
+            await _context.Shoppingcarts.AddAsync(cart);
         }
 
-        public async Task<IEnumerable<Shoppingcart>>
-            GetCartAsync(int userId)
+        public async Task<IEnumerable<Shoppingcart>>GetCartAsync(int userId)
         {
             return await _context.Shoppingcarts
                 .AsNoTracking()
@@ -32,37 +27,25 @@ namespace BookStoreApplication.Web.Repositories.Implementations
                 .ToListAsync();
         }
 
-        public async Task<Shoppingcart?>
-            GetItemAsync(
-                int userId,
-                string isbn)
+        public async Task<Shoppingcart?>GetItemAsync(int userId,string isbn)
         {
-            return await _context.Shoppingcarts
-                .FirstOrDefaultAsync(x =>
-                    x.UserId == userId &&
-                    x.Isbn == isbn);
+            return await _context.Shoppingcarts.FirstOrDefaultAsync(x =>x.UserId == userId && x.Isbn == isbn);
         }
 
-        public Task RemoveAsync(
-           Shoppingcart cart)
+        public Task RemoveAsync(Shoppingcart cart)
         {
-            _context.Shoppingcarts
-                .Remove(cart);
+            _context.Shoppingcarts.Remove(cart);
 
             return Task.CompletedTask;
         }
 
-        public async Task ClearAsync(
-            int userId)
+        public async Task ClearAsync(int userId)
         {
-            var items =
-                await _context.Shoppingcarts
-                    .Where(x =>
-                        x.UserId == userId)
-                    .ToListAsync();
+            var items = await _context.Shoppingcarts
+                       .Where(x => x.UserId == userId)
+                       .ToListAsync();
 
-            _context.Shoppingcarts
-                .RemoveRange(items);
+            _context.Shoppingcarts.RemoveRange(items);
         }
 
         public async Task SaveAsync()

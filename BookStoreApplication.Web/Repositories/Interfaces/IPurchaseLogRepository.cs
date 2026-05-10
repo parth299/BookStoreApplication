@@ -6,8 +6,7 @@ namespace BookStoreApplication.Web.Repositories.Interfaces
     {
         Task AddAsync(Purchaselog log);
 
-        Task<IEnumerable<Purchaselog>>
-            GetByUserAsync(int userId);
+        Task<IEnumerable<Purchaselog>>GetByUserAsync(int userId);
 
         Task SaveAsync();
     }

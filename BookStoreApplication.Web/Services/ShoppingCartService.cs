@@ -5,8 +5,7 @@ using BookStoreApplication.Web.Repositories.Interfaces;
 
 namespace BookStoreApplication.Web.Services
 {
-    public class ShoppingCartService
-        : IShoppingCartService
+    public class ShoppingCartService: IShoppingCartService
     {
         private readonly IShoppingCartRepository _cartRepository;
         private readonly IInventoryRepository _inventoryRepository;
@@ -31,31 +30,25 @@ namespace BookStoreApplication.Web.Services
 
             if (!userExists)
             {
-                throw new BadRequestException(
-                    "Invalid user");
+                throw new BadRequestException("Invalid user");
             }
-            var inventory =
-                await _inventoryRepository.GetAvailableByISBNAsync(dto.ISBN);
+            var inventory = await _inventoryRepository.GetAvailableByISBNAsync(dto.ISBN);
 
             if (inventory == null)
             {
-                throw new BadRequestException(
-                    "No inventory available");
+                throw new BadRequestException("No inventory available");
             }
 
             if (_reservationService.IsReserved(inventory.InventoryId))
             {
-                throw new BadRequestException(
-                    "Inventory already reserved");
+                throw new BadRequestException("Inventory already reserved");
             }
 
-            var existing =
-                await _cartRepository.GetItemAsync(dto.UserId,dto.ISBN);
+            var existing = await _cartRepository.GetItemAsync(dto.UserId,dto.ISBN);
 
             if (existing != null)
             {
-                throw new BadRequestException(
-                    "Duplicate cart item");
+                throw new BadRequestException("Duplicate cart item");
             }
 
             await _reservationService.ReserveAsync(inventory.InventoryId,dto.UserId);
@@ -73,8 +66,7 @@ namespace BookStoreApplication.Web.Services
 
         public async Task<IEnumerable<CartItemDto>>GetCartAsync(int userId)
         {
-            var items =
-                await _cartRepository.GetCartAsync(userId);
+            var items = await _cartRepository.GetCartAsync(userId);
 
             return items.Select(x =>
                 new CartItemDto
@@ -87,60 +79,42 @@ namespace BookStoreApplication.Web.Services
 
         public async Task RemoveAsync(int userId,string isbn)
         {
-            var item =
-                await _cartRepository.GetItemAsync(userId,isbn);
+            var item = await _cartRepository.GetItemAsync(userId,isbn);
 
             if (item == null)
             {
-                throw new NotFoundException(
-                    "Cart item not found");
+                throw new NotFoundException("Cart item not found");
             }
 
-            var inventory =
-                await _inventoryRepository
-                    .GetAvailableByISBNAsync(
-                        isbn);
+            var inventory = await _inventoryRepository.GetAvailableByISBNAsync(isbn);
 
             if (inventory != null)
             {
-                await _reservationService
-                    .ReleaseAsync(
-                        inventory.InventoryId);
+                await _reservationService.ReleaseAsync(inventory.InventoryId);
             }
 
-            await _cartRepository
-                .RemoveAsync(item);
+            await _cartRepository.RemoveAsync(item);
 
-            await _cartRepository
-                .SaveAsync();
+            await _cartRepository.SaveAsync();
         }
 
         public async Task ClearAsync(int userId)
         {
-            var items =
-                await _cartRepository
-                    .GetCartAsync(userId);
+            var items = await _cartRepository.GetCartAsync(userId);
 
             foreach (var item in items)
             {
-                var inventory =
-                    await _inventoryRepository
-                        .GetAvailableByISBNAsync(
-                            item.Isbn);
+                var inventory = await _inventoryRepository.GetAvailableByISBNAsync(item.Isbn);
 
                 if (inventory != null)
                 {
-                    await _reservationService
-                        .ReleaseAsync(
-                            inventory.InventoryId);
+                    await _reservationService.ReleaseAsync(inventory.InventoryId);
                 }
             }
 
-            await _cartRepository
-                .ClearAsync(userId);
+            await _cartRepository.ClearAsync(userId);
 
-            await _cartRepository
-                .SaveAsync();
+            await _cartRepository.SaveAsync();
         }
     }
 }

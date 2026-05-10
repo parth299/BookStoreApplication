@@ -17,26 +17,21 @@ namespace BookStoreApplication.Web.Repositories.Implementations
 
         public async Task AddAsync(Inventory inventory)
         {
-            await _context.Inventories
-                .AddAsync(inventory);
+            await _context.Inventories.AddAsync(inventory);
         }
 
         public async Task<IEnumerable<Inventory>> GetAllAsync()
         {
-            return await _context.Inventories
-                .ToListAsync();
+            return await _context.Inventories.ToListAsync();
         }
 
-        public async Task<IEnumerable<Inventory>>
-            FilterAsync(string? isbn)
+        public async Task<IEnumerable<Inventory>>FilterAsync(string? isbn)
         {
-            var query =
-                _context.Inventories.AsQueryable();
+            var query =_context.Inventories.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(isbn))
             {
-                query = query.Where(x =>
-                    x.Isbn == isbn);
+                query = query.Where(x =>x.Isbn == isbn);
             }
 
             return await query.ToListAsync();
@@ -44,24 +39,17 @@ namespace BookStoreApplication.Web.Repositories.Implementations
 
         public async Task<Inventory?> GetByIdAsync(int id)
         {
-            return await _context.Inventories
-                .FirstOrDefaultAsync(x =>
-                    x.InventoryId == id);
+            return await _context.Inventories.FirstOrDefaultAsync(x =>x.InventoryId == id);
         }
 
         public async Task<Inventory?>GetAvailableByISBNAsync(string isbn)
         {
-            return await _context.Inventories
-                .FirstOrDefaultAsync(x =>
-                    x.Isbn == isbn &&
-                    x.Purchased == 0);
+            return await _context.Inventories.FirstOrDefaultAsync(x =>x.Isbn == isbn && x.Purchased == 0);
         }
 
         public async Task<IEnumerable<Inventory>> GetAvailableInventoryAsync()
         {
-            return await _context.Inventories
-                .Where(x => x.Purchased == 0)
-                .ToListAsync();
+            return await _context.Inventories.Where(x => x.Purchased == 0).ToListAsync();
         }
 
         public async Task<IEnumerable<LowStockDto>>GetLowStockAsync()

@@ -10,29 +10,21 @@ namespace BookStoreApplication.Web.Controllers
     [Route("api/[controller]")]
     [ApiController]
     //[Authorize]
-    public class PurchaseLogController
-        : ControllerBase
+    public class PurchaseLogController: ControllerBase
     {
-        private readonly IPurchaseLogService
-            _service;
+        private readonly IPurchaseLogService _service;
 
-        public PurchaseLogController(
-            IPurchaseLogService service)
+        public PurchaseLogController(IPurchaseLogService service)
         {
             _service = service;
         }
 
         [HttpPost]
-        public async Task<IActionResult>
-            Checkout(PurchaseDto dto)
+        public async Task<IActionResult>Checkout(PurchaseDto dto)
         {
-            await _service
-                .CheckoutAsync(dto);
+            await _service.CheckoutAsync(dto);
 
-            return Ok(
-                ApiResponse<string>
-                .SuccessResponse(
-                    "Purchase completed"));
+            return Ok(ApiResponse<string>.SuccessResponse("Purchase completed"));
         }
     }
 }

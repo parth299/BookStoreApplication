@@ -5,8 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookStoreApplication.Web.Repositories.Implementations
 {
-    public class PurchaseLogRepository
-    : IPurchaseLogRepository
+    public class PurchaseLogRepository: IPurchaseLogRepository
     {
         private readonly AppDbContext _context;
 
@@ -20,8 +19,7 @@ namespace BookStoreApplication.Web.Repositories.Implementations
             await _context.Purchaselogs.AddAsync(log);
         }
 
-        public async Task<IEnumerable<Purchaselog>>
-            GetByUserAsync(int userId)
+        public async Task<IEnumerable<Purchaselog>>GetByUserAsync(int userId)
         {
             return await _context.Purchaselogs
                 .Where(x => x.UserId == userId)

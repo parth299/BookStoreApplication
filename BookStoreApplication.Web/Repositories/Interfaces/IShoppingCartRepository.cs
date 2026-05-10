@@ -6,12 +6,9 @@ namespace BookStoreApplication.Web.Repositories.Interfaces
     {
         Task AddAsync(Shoppingcart cart);
 
-        Task<IEnumerable<Shoppingcart>>
-            GetCartAsync(int userId);
+        Task<IEnumerable<Shoppingcart>>GetCartAsync(int userId);
 
-        Task<Shoppingcart?> GetItemAsync(
-            int userId,
-            string isbn);
+        Task<Shoppingcart?> GetItemAsync(int userId,string isbn);
 
         Task RemoveAsync(Shoppingcart cart);
 

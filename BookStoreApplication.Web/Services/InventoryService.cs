@@ -6,30 +6,23 @@ using BookStoreApplication.Web.Repositories.Interfaces;
 
 namespace BookStoreApplication.Web.Services
 {
-    public class InventoryService
-        : IInventoryService
+    public class InventoryService: IInventoryService
     {
-        private readonly IInventoryRepository
-            _repository;
+        private readonly IInventoryRepository _repository;
 
         private readonly IMapper _mapper;
 
-        public InventoryService(
-            IInventoryRepository repository,
-            IMapper mapper)
+        public InventoryService(IInventoryRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
         }
 
-        public async Task<int> CreateAsync(
-            InventoryDto dto)
+        public async Task<int> CreateAsync(InventoryDto dto)
         {
-            if (dto.ConditionRank < 1 ||
-                dto.ConditionRank > 6)
+            if (dto.ConditionRank < 1 || dto.ConditionRank > 6)
             {
-                throw new BadRequestException(
-                    "Condition rank must be between 1 and 6");
+                throw new BadRequestException("Condition rank must be between 1 and 6");
             }
 
             var entity = new Inventory
@@ -47,14 +40,11 @@ namespace BookStoreApplication.Web.Services
         }
         public async Task PatchAsync(int id,InventoryPatchDto dto)
         {
-            var item =
-                await _repository
-                    .GetByIdAsync(id);
+            var item = await _repository.GetByIdAsync(id);
 
             if (item == null)
             {
-                throw new NotFoundException(
-                    "Inventory not found");
+                throw new NotFoundException("Inventory not found");
             }
 
             if (dto.Ranks.HasValue)
@@ -71,12 +61,9 @@ namespace BookStoreApplication.Web.Services
             await _repository.SaveAsync();
         }
 
-
-        public async Task<IEnumerable<InventoryDto>>
-            GetAllAsync(string? isbn)
+        public async Task<IEnumerable<InventoryDto>>GetAllAsync(string? isbn)
         {
-            var data =
-                await _repository.FilterAsync(isbn);
+            var data = await _repository.FilterAsync(isbn);
 
             return data.Select(x =>
                 new InventoryDto
@@ -88,16 +75,13 @@ namespace BookStoreApplication.Web.Services
                 });
         }
 
-        public async Task<InventoryDto>
-            GetByIdAsync(int id)
+        public async Task<InventoryDto>GetByIdAsync(int id)
         {
-            var item =
-                await _repository.GetByIdAsync(id);
+            var item = await _repository.GetByIdAsync(id);
 
             if (item == null)
             {
-                throw new NotFoundException(
-                    "Inventory not found");
+                throw new NotFoundException("Inventory not found");
             }
 
             return new InventoryDto
@@ -109,24 +93,18 @@ namespace BookStoreApplication.Web.Services
             };
         }
 
-        public async Task UpdateAsync(
-            int id,
-            InventoryDto dto)
+        public async Task UpdateAsync(int id,InventoryDto dto)
         {
-            if (dto.ConditionRank < 1 ||
-                dto.ConditionRank > 6)
+            if (dto.ConditionRank < 1 || dto.ConditionRank > 6)
             {
-                throw new BadRequestException(
-                    "Condition rank must be between 1 and 6");
+                throw new BadRequestException("Condition rank must be between 1 and 6");
             }
 
-            var item =
-                await _repository.GetByIdAsync(id);
+            var item = await _repository.GetByIdAsync(id);
 
             if (item == null)
             {
-                throw new NotFoundException(
-                    "Inventory not found");
+                throw new NotFoundException("Inventory not found");
             }
 
             item.Ranks = dto.ConditionRank;
@@ -136,12 +114,9 @@ namespace BookStoreApplication.Web.Services
             await _repository.SaveAsync();
         }
 
-        public async Task<IEnumerable<InventoryDto>>
-    GetAvailableInventoryAsync()
+        public async Task<IEnumerable<InventoryDto>> GetAvailableInventoryAsync()
         {
-            var data =
-                await _repository
-                    .GetAvailableInventoryAsync();
+            var data = await _repository.GetAvailableInventoryAsync();
 
             return data.Select(x =>
                 new InventoryDto
@@ -153,11 +128,9 @@ namespace BookStoreApplication.Web.Services
                 });
         }
 
-        public async Task<IEnumerable<LowStockDto>>
-            GetLowStockAsync()
+        public async Task<IEnumerable<LowStockDto>>GetLowStockAsync()
         {
-            return await _repository
-                .GetLowStockAsync();
+            return await _repository.GetLowStockAsync();
         }
     }
 }

@@ -6,12 +6,9 @@ namespace BookStoreApplication.Web.Services
     {
         Task AddAsync(CartItemDto dto);
 
-        Task<IEnumerable<CartItemDto>>
-            GetCartAsync(int userId);
+        Task<IEnumerable<CartItemDto>>GetCartAsync(int userId);
 
-        Task RemoveAsync(
-            int userId,
-            string isbn);
+        Task RemoveAsync(int userId, string isbn);
 
         Task ClearAsync(int userId);
     }

@@ -6,8 +6,7 @@ using BookStoreApplication.Web.Repositories.Interfaces;
 
 namespace BookStoreApplication.Web.Services
 {
-    public class PurchaseLogService
-    : IPurchaseLogService
+    public class PurchaseLogService: IPurchaseLogService
     {
         private readonly IShoppingCartRepository _cartRepository;
 
@@ -16,6 +15,7 @@ namespace BookStoreApplication.Web.Services
         private readonly IPurchaseLogRepository _purchaseRepository;
 
         private readonly IReservationService _reservationService;
+
         private readonly IUserRepository _userRepository;
 
         public PurchaseLogService(
@@ -36,37 +36,28 @@ namespace BookStoreApplication.Web.Services
 
         }
 
-        public async Task CheckoutAsync(
-            PurchaseDto dto)
+        public async Task CheckoutAsync(PurchaseDto dto)
         {
             var userExists = await _userRepository.UserExistsAsync(dto.UserId);
 
             if (!userExists)
             {
-                throw new BadRequestException(
-                    "Invalid user");
+                throw new BadRequestException("Invalid user");
             }
-            var cartItems =
-                await _cartRepository
-                    .GetCartAsync(dto.UserId);
+            var cartItems = await _cartRepository.GetCartAsync(dto.UserId);
 
             if (!cartItems.Any())
             {
-                throw new BadRequestException(
-                    "Cart is empty");
+                throw new BadRequestException("Cart is empty");
             }
 
             foreach (var item in cartItems)
             {
-                var inventory =
-                    await _inventoryRepository
-                        .GetAvailableByISBNAsync(
-                            item.Isbn);
+                var inventory = await _inventoryRepository.GetAvailableByISBNAsync(item.Isbn);
 
                 if (inventory == null)
                 {
-                    throw new BadRequestException(
-                        $"Inventory unavailable for ISBN {item.Isbn}");
+                    throw new BadRequestException($"Inventory unavailable for ISBN {item.Isbn}");
                 }
 
                 inventory.Purchased = 1;
@@ -80,16 +71,12 @@ namespace BookStoreApplication.Web.Services
                         InventoryId = inventory.InventoryId
                     });
 
-                await _reservationService
-                    .ReleaseAsync(
-                        inventory.InventoryId);
+                await _reservationService.ReleaseAsync(inventory.InventoryId);
             }
 
-            await _cartRepository
-                .ClearAsync(dto.UserId);
+            await _cartRepository.ClearAsync(dto.UserId);
 
-            await _purchaseRepository
-                .SaveAsync();
+            await _purchaseRepository.SaveAsync();
         }
     }
 }
