@@ -1,41 +1,43 @@
 using BookStoreApplication.Web.Configurations;
 using BookStoreApplication.Web.Data;
+using BookStoreApplication.Web.DTOs.Author;
+using BookStoreApplication.Web.DTOs.Category;
 using BookStoreApplication.Web.DTOs.ReviewsAndRatings;
+using BookStoreApplication.Web.DTOs.User;
 using BookStoreApplication.Web.Filters;
 using BookStoreApplication.Web.Mapping;
 using BookStoreApplication.Web.Middleware;
 using BookStoreApplication.Web.Middleware.RatingAndReviewers;
 using BookStoreApplication.Web.Models;
+using BookStoreApplication.Web.Repositories;
+using BookStoreApplication.Web.Repositories.Author;
+using BookStoreApplication.Web.Repositories.Category;
 using BookStoreApplication.Web.Repositories.Implementations;
 using BookStoreApplication.Web.Repositories.Interfaces;
 using BookStoreApplication.Web.Repositories.ReviewAndRatings;
+using BookStoreApplication.Web.Repositories.User;
 using BookStoreApplication.Web.Services;
+using BookStoreApplication.Web.Services.Author;
+using BookStoreApplication.Web.Services.Auth;
+using BookStoreApplication.Web.Services.Cart;
+using BookStoreApplication.Web.Services.Category;
+using BookStoreApplication.Web.Services.Inventory;
 using BookStoreApplication.Web.Services.ReviewsAndRatings;
 using BookStoreApplication.Web.services;
+using BookStoreApplication.Web.Validators.Author;
+using BookStoreApplication.Web.Validators.Category;
+using BookStoreApplication.Web.Validators.Inventory;
 using BookStoreApplication.Web.Validators.RatingAndReviewers;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text;
-using BookStoreApplication.Web.DTOs.Author;
-using BookStoreApplication.Web.DTOs.Category;
-using BookStoreApplication.Web.DTOs.User;
-using BookStoreApplication.Web.Repositories.Author;
-using BookStoreApplication.Web.Repositories.Category;
-using BookStoreApplication.Web.Repositories.User;
-using BookStoreApplication.Web.Services.Author;
-using BookStoreApplication.Web.Services.Auth;
-using BookStoreApplication.Web.Services.Inventory;
-using BookStoreApplication.Web.Services.Category;
-using BookStoreApplication.Web.Services.Cart;
-using BookStoreApplication.Web.Validators.Author;
-using BookStoreApplication.Web.Validators.Category;
-using BookStoreApplication.Web.Validators.Inventory;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,9 +71,37 @@ builder.Services.AddControllers(options =>
 .ConfigureApiBehaviorOptions(options =>
 {
     options.SuppressModelStateInvalidFilter = true;
+
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var errors = context.ModelState
+            .Where(x => x.Value?.Errors.Count > 0)
+            .SelectMany(x =>
+                x.Value!.Errors.Select(
+                    error => error.ErrorMessage))
+            .ToList();
+
+        return new BadRequestObjectResult(errors);
+    };
 });
 
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddScoped<
+    IBookRepository,
+    BookRepository>();
+
+builder.Services.AddScoped<
+    IPublisherRepository,
+    PublisherRepository>();
+
+builder.Services.AddScoped<
+    IBookService,
+    BookService>();
+
+builder.Services.AddScoped<
+    IPublisherService,
+    PublisherService>();
 
 builder.Services.AddScoped<
     IAuthorRepository,
@@ -194,11 +224,8 @@ builder.Services
             new TokenValidationParameters
             {
                 ValidateIssuer = true,
-
                 ValidateAudience = true,
-
                 ValidateLifetime = true,
-
                 ValidateIssuerSigningKey = true,
 
                 ValidIssuer =
@@ -218,11 +245,13 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "BookStore",
-        Version = "v1"
-    });
+    c.SwaggerDoc(
+        "v1",
+        new OpenApiInfo
+        {
+            Title = "BookStore",
+            Version = "v1"
+        });
 
     c.AddSecurityDefinition(
         "Bearer",
