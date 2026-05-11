@@ -1,4 +1,4 @@
-﻿using BookStoreApplication.Web.Exceptions;
+using BookStoreApplication.Web.Exceptions;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace BookStoreApplication.Web.Services.Cart

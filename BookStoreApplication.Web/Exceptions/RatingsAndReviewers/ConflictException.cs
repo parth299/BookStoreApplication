@@ -1,8 +1,8 @@
 namespace BookStoreApplication.Web.Exceptions.RatingsAndReviewers
 {
-    public class ConflictException : ApiException
+    public class ConflictExceptionReview : ApiException
     {
-        public ConflictException(string message) : base(message, StatusCodes.Status409Conflict)
+        public ConflictExceptionReview(string message) : base(message, StatusCodes.Status409Conflict)
         {
         }
     }

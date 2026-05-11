@@ -2,10 +2,12 @@ using BookStoreApplication.Web.DTOs;
 using BookStoreApplication.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using BookStoreApplication.Web.Wrapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BookStoreApplication.Web.Controllers;
 [ApiController]
 [Route("publishers")]
+[Authorize(Roles = "Guest,RegisteredUser,StoreOwner,Admin")]
 public class PublishersController : ControllerBase
 {
     private readonly IPublisherService _publisherService;
@@ -15,6 +17,7 @@ public class PublishersController : ControllerBase
         _publisherService = publisherService;
     }
 
+    [Authorize(Roles = "StoreOwner,Admin")]
     [HttpPost]
     public async Task<ActionResult<ApiResponse<PublisherResponseDto>>> Create(PublisherCreateDto dto)
     {
@@ -44,6 +47,7 @@ public class PublishersController : ControllerBase
         return Ok(ApiResponse<IReadOnlyList<PublisherDetailsDto>>.Success(StatusCodes.Status200OK, "Publisher details fetched successfully.", publishers));
     }
 
+    [Authorize(Roles = "StoreOwner,Admin")]
     [HttpPut("{id:int}")]
     public async Task<ActionResult<ApiResponse<PublisherResponseDto>>> Update(int id, PublisherUpdateDto dto)
     {

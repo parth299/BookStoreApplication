@@ -3,11 +3,13 @@ using BookStoreApplication.Web.Wrappers;
 using BookStoreApplication.Web.Filters;
 using BookStoreApplication.Web.DTOs.Category;
 using BookStoreApplication.Web.Services.Category;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BookStoreApplication.Web.Controllers.Category
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "Guest,RegisteredUser,StoreOwner,Admin")]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _service;
@@ -17,6 +19,7 @@ namespace BookStoreApplication.Web.Controllers.Category
             _service = service;
         }
 
+        [Authorize(Roles = "StoreOwner,Admin")]
         [HttpPost]
         public async Task<ActionResult<ApiResponse<CategoryResponseDto>>> Create(
             CategoryRequestDto dto)
@@ -59,6 +62,7 @@ namespace BookStoreApplication.Web.Controllers.Category
                     result));
         }
 
+        [Authorize(Roles = "StoreOwner,Admin")]
         [HttpPut("{id:int:min(1)}")]
         public async Task<ActionResult<ApiResponse<CategoryResponseDto>>> Update(
             int id,
@@ -92,6 +96,7 @@ namespace BookStoreApplication.Web.Controllers.Category
                     "Category updated"));
         }
 
+        [Authorize(Roles = "StoreOwner,Admin")]
         [HttpDelete("{id:int:min(1)}")]
         public async Task<ActionResult<ApiResponse<bool>>> Delete(
             int id)

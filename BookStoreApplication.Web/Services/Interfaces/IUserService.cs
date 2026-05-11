@@ -1,6 +1,7 @@
 using BookStoreApplication.Web.DTOs.Author;
 using BookStoreApplication.Web.DTOs.User;
 using BookStoreApplication.Web.Models;
+using UserEntity = BookStoreApplication.Web.Models.User;
 
 namespace BookStoreApplication.Web.services
 {
@@ -8,10 +9,10 @@ namespace BookStoreApplication.Web.services
     {
         Task<RegisterUserDTO?> RegisterAsync (RegisterUserDTO request);
         Task<AuthResponseDTO> LoginAsync(LoginUserDTO request);
-        Task<List<User>> GetUsersAsync();
-        Task<User?> GetUserProfileAsync(int id);
-        Task<User?> UpdateUserAsync(UpdateUserDTO user);
-        Task<User?> ChangePasswordAsync(int id, string updated_password);
-        Task<List<User>> GetUsersByRoleId(int roleId);
+        Task<List<UserEntity>> GetUsersAsync();
+        Task<UserEntity?> GetUserProfileAsync(int id);
+        Task<UserEntity?> UpdateUserAsync(UpdateUserDTO user);
+        Task<UserEntity?> ChangePasswordAsync(int id, string updated_password);
+        Task<List<UserEntity>> GetUsersByRoleId(int roleId);
     }
 }

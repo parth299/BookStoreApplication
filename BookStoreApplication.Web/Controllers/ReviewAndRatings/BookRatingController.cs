@@ -1,10 +1,12 @@
 using BookStoreApplication.Web.Services.ReviewsAndRatings;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BookStoreApplication.Web.Controllers.ReviewAndRatings
 {
     [Route("api/books")]
     [ApiController]
+    [Authorize(Roles = "Guest,RegisteredUser,StoreOwner,Admin")]
     public class BookRatingController : ControllerBase
     {
         private readonly IBookReviewService _bookReviewService;

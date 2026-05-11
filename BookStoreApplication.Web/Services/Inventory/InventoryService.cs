@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using BookStoreApplication.Web.DTOs.Inventory;
 using BookStoreApplication.Web.Exceptions;
 using BookStoreApplication.Web.Models;
@@ -32,7 +32,7 @@ namespace BookStoreApplication.Web.Services.Inventory
                     "Condition rank must be between 1 and 6");
             }
 
-            var entity = new Inventory
+            var entity = new Models.Inventory
             {
                 Isbn = dto.ISBN,
                 Ranks = dto.ConditionRank,

@@ -6,11 +6,13 @@ using BookStoreApplication.Web.Wrappers;
 using BookStoreApplication.Web.Filters;
 using BookStoreApplication.Web.DTOs.Author;
 using BookStoreApplication.Web.Services.Author;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BookStoreApplication.Web.Controllers.Auth
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "Guest,RegisteredUser,StoreOwner,Admin")]
     public class AuthorController : ControllerBase
     {
         private readonly IAuthorService _service;
@@ -24,6 +26,7 @@ namespace BookStoreApplication.Web.Controllers.Auth
             _fileUploadService = fileUploadService;
         }
 
+        [Authorize(Roles = "StoreOwner,Admin")]
         [HttpPost]
         [ServiceFilter(typeof(LogActionFilter))]
         public async Task<ActionResult<ApiResponse<AuthorResponseDTO>>> Create(
@@ -77,6 +80,7 @@ namespace BookStoreApplication.Web.Controllers.Auth
                     .SuccessResponse(result));
         }
 
+        [Authorize(Roles = "StoreOwner,Admin")]
         [HttpPut("{id:int:min(1)}")]
         public async Task<ActionResult<ApiResponse<AuthorResponseDTO>>> Update(
             int id,
@@ -140,6 +144,7 @@ namespace BookStoreApplication.Web.Controllers.Auth
                     .SuccessResponse(result));
         }
 
+        [Authorize(Roles = "StoreOwner,Admin")]
         [HttpPost("{id:int:min(1)}/photo")]
         [Consumes("multipart/form-data")]
         public async Task<ActionResult<ApiResponse<string>>> UploadPhoto(
@@ -196,6 +201,7 @@ namespace BookStoreApplication.Web.Controllers.Auth
             }
         }
 
+        [Authorize(Roles = "StoreOwner,Admin")]
         [HttpDelete("{id:int:min(1)}/photo")]
         public async Task<ActionResult<ApiResponse<bool>>> DeletePhoto(
             int id)

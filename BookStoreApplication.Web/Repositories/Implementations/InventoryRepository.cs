@@ -1,4 +1,4 @@
-﻿using BookStoreApplication.Web.Data;
+using BookStoreApplication.Web.Data;
 using BookStoreApplication.Web.DTOs.Inventory;
 using BookStoreApplication.Web.Models;
 using BookStoreApplication.Web.Repositories.Interfaces;

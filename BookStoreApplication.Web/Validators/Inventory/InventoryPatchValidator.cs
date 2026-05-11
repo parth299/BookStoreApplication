@@ -1,4 +1,4 @@
-﻿using BookStoreApplication.Web.DTOs.Inventory;
+using BookStoreApplication.Web.DTOs.Inventory;
 using FluentValidation;
 
 namespace BookStoreApplication.Web.Validators.Inventory

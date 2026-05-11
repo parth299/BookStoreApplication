@@ -1,4 +1,4 @@
-﻿using BookStoreApplication.Web.DTOs.Inventory;
+using BookStoreApplication.Web.DTOs.Inventory;
 using BookStoreApplication.Web.Exceptions;
 using BookStoreApplication.Web.Models;
 using BookStoreApplication.Web.Repositories.Implementations;

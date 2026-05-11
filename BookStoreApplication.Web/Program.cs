@@ -38,6 +38,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text;
+using UserEntity = BookStoreApplication.Web.Models.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,8 +58,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.Configure<JwtOptions>(
     builder.Configuration.GetSection("Jwt"));
 
-builder.Services.AddAutoMapper(
-    typeof(MappingProfile));
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
 
 builder.Services.AddMemoryCache();
 
@@ -183,8 +183,8 @@ builder.Services.AddScoped<
     FileUploadService>();
 
 builder.Services.AddScoped<
-    IPasswordHasher<User>,
-    PasswordHasher<User>>();
+    IPasswordHasher<UserEntity>,
+    PasswordHasher<UserEntity>>();
 
 builder.Services
     .AddFluentValidationAutoValidation();
