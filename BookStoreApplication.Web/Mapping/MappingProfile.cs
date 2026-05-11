@@ -4,6 +4,8 @@ using BookStoreApplication.Web.DTOs.Author;
 using BookStoreApplication.Web.DTOs.Category;
 using BookStoreApplication.Web.DTOs.Inventory;
 using BookStoreApplication.Web.Models;
+using AuthorEntity = BookStoreApplication.Web.Models.Author;
+using CategoryEntity = BookStoreApplication.Web.Models.Category;
 
 namespace BookStoreApplication.Web.Mapping
 {
@@ -178,16 +180,16 @@ namespace BookStoreApplication.Web.Mapping
                     dest => dest.Books,
                     opt => opt.MapFrom(src => src.Books));
 
-            CreateMap<Author, AuthorResponseDTO>();
+            CreateMap<AuthorEntity, AuthorResponseDTO>();
 
-            CreateMap<Author, AuthorWithBooksResponseDTO>();
+            CreateMap<AuthorEntity, AuthorWithBooksResponseDTO>();
 
-            CreateMap<CategoryRequestDto, Category>()
+            CreateMap<CategoryRequestDto, CategoryEntity>()
                 .ForMember(
                     dest => dest.CatDescription,
                     opt => opt.MapFrom(src => src.CatDescription));
 
-            CreateMap<Category, CategoryResponseDto>()
+            CreateMap<CategoryEntity, CategoryResponseDto>()
                 .ForMember(
                     dest => dest.CatId,
                     opt => opt.MapFrom(src => src.CatId))

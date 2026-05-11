@@ -1,4 +1,4 @@
-﻿namespace BookStoreApplication.Web.DTOs.Inventory
+namespace BookStoreApplication.Web.DTOs.Inventory
 {
     public class CartItemDto
     {

@@ -23,7 +23,7 @@ namespace BookStoreApplication.Web.Repositories.ReviewAndRatings
 
             if (exists)
             {
-                throw new ConflictException("Reviewer already exists.");
+                throw new ConflictExceptionReview("Reviewer already exists.");
             }
 
             var reviewer = new Reviewer

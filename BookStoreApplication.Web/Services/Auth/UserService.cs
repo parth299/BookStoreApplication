@@ -5,17 +5,18 @@ using BookStoreApplication.Web.Repositories.User;
 using BookStoreApplication.Web.services;
 using BookStoreApplication.Web.Services;
 using Microsoft.AspNetCore.Identity;
+using UserEntity = BookStoreApplication.Web.Models.User;
 
 namespace BookStoreApplication.Web.Services.Auth
 {
     public class UserService: IUserService
     {
         private readonly UserReporitory _userRepository;
-        private readonly IPasswordHasher<User> _passwordHasher;
+        private readonly IPasswordHasher<UserEntity> _passwordHasher;
         private readonly PermRoleRepository _roleRepository;
         private readonly IJwtTokenService _jwtService;
 
-        public UserService(UserReporitory userReporitory, IPasswordHasher<User> passwordHasher, PermRoleRepository roleRepository, IJwtTokenService jwtService)
+        public UserService(UserReporitory userReporitory, IPasswordHasher<UserEntity> passwordHasher, PermRoleRepository roleRepository, IJwtTokenService jwtService)
         {
             _userRepository = userReporitory;
             _passwordHasher = passwordHasher;
@@ -23,7 +24,7 @@ namespace BookStoreApplication.Web.Services.Auth
             _jwtService = jwtService;
         }
 
-        public async Task<User?> ChangePasswordAsync(int id, string updated_password)
+        public async Task<UserEntity?> ChangePasswordAsync(int id, string updated_password)
         {
             var existing_user = await _userRepository.GetByUserId(id);
 
@@ -40,14 +41,14 @@ namespace BookStoreApplication.Web.Services.Auth
             return existing_user;
         }
 
-        public async Task<List<User>> GetUsersByRoleId(int roleId)
+        public async Task<List<UserEntity>> GetUsersByRoleId(int roleId)
         {
             var users = await _userRepository.GetUsersByRoleId(roleId);
 
             return users;
         }
 
-        public async Task<User?> UpdateUserAsync(UpdateUserDTO request)
+        public async Task<UserEntity?> UpdateUserAsync(UpdateUserDTO request)
         {
             if(request is null)
             {
@@ -70,12 +71,12 @@ namespace BookStoreApplication.Web.Services.Auth
             return existing_user;
         }
 
-        public async Task<User?> GetUserProfileAsync(int id)
+        public async Task<UserEntity?> GetUserProfileAsync(int id)
         {
             return await _userRepository.GetByUserId(id);
         }
 
-        public async Task<List<User>> GetUsersAsync()
+        public async Task<List<UserEntity>> GetUsersAsync()
         {
             return await _userRepository.GetAllUsers();
         }
@@ -153,7 +154,7 @@ namespace BookStoreApplication.Web.Services.Auth
             }
 
             // Register the user
-            var user = new User();
+            var user = new UserEntity();
 
             user.UserName = request.UserName;
             user.FirstName = request.FirstName;

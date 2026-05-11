@@ -1,4 +1,4 @@
-﻿namespace BookStoreApplication.Web.DTOs.ReviewsAndRatings
+namespace BookStoreApplication.Web.DTOs.ReviewsAndRatings
 {
     public class UpdateReviewRequestDto
     {

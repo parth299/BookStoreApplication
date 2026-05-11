@@ -6,6 +6,7 @@ using BookStoreApplication.Web.Configurations;
 using BookStoreApplication.Web.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using UserEntity = BookStoreApplication.Web.Models.User;
 
 namespace BookStoreApplication.Web.Services.Auth
 {
@@ -19,7 +20,7 @@ namespace BookStoreApplication.Web.Services.Auth
         }
 
         public Task<string> GenerateToken(
-            User user,
+            UserEntity user,
             string role)
         {
             var claims = new List<Claim>

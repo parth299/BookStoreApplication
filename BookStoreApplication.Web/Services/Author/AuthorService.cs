@@ -1,4 +1,5 @@
 using AutoMapper;
+using AuthorEntity = BookStoreApplication.Web.Models.Author;
 //using BookStoreApplication.Web.Exceptions;
 using BookStoreApplication.Web.Models;
 using BookStoreApplication.Web.Data;
@@ -64,7 +65,7 @@ namespace BookStoreApplication.Web.Services.Author
             if (await _repository.ExistsByNameAsync(dto.FirstName, dto.LastName))
                 throw new BadRequestException("Author with this name already exists");
 
-            var author = _mapper.Map<Author>(dto);
+            var author = _mapper.Map<AuthorEntity>(dto);
             var result = await _repository.CreateAsync(author);
             return _mapper.Map<AuthorResponseDTO>(result);
         }

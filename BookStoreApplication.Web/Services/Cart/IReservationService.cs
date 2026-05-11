@@ -1,4 +1,4 @@
-﻿namespace BookStoreApplication.Web.Services.Cart
+namespace BookStoreApplication.Web.Services.Cart
 {
     public interface IReservationService
     {

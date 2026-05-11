@@ -1,4 +1,4 @@
-﻿using BookStoreApplication.Web.Models;
+using BookStoreApplication.Web.Models;
 
 namespace BookStoreApplication.Web.Repositories.Interfaces
 {

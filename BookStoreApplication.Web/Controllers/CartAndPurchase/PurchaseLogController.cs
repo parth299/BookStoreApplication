@@ -1,4 +1,4 @@
-﻿using BookStoreApplication.Web.DTOs.Inventory;
+using BookStoreApplication.Web.DTOs.Inventory;
 using BookStoreApplication.Web.Services.Inventory;
 using BookStoreApplication.Web.Wrappers;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +9,7 @@ namespace BookStoreApplication.Web.Controllers.CartAndPurchase
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize(Roles = "RegisteredUser,StoreOwner,Admin")]
     public class PurchaseLogController
         : ControllerBase
     {

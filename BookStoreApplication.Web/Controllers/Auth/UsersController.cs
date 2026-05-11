@@ -7,6 +7,7 @@ namespace BookStoreApplication.Web.Controllers.Auth
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "RegisteredUser,StoreOwner,Admin")]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -16,6 +17,7 @@ namespace BookStoreApplication.Web.Controllers.Auth
             _userService = userService;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("role/{roleId}")]
         public async Task<IActionResult> GetUsersByRoleId(int roleId)
         {
@@ -69,6 +71,7 @@ namespace BookStoreApplication.Web.Controllers.Auth
             return Ok(response);
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterUserDTO request)
         {
@@ -82,6 +85,7 @@ namespace BookStoreApplication.Web.Controllers.Auth
             return Ok("User registered successfully");
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginUserDTO request)
         {

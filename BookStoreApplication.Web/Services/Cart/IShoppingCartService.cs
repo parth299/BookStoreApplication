@@ -1,4 +1,4 @@
-﻿using BookStoreApplication.Web.DTOs.Inventory;
+using BookStoreApplication.Web.DTOs.Inventory;
 
 namespace BookStoreApplication.Web.Services.Cart
 {

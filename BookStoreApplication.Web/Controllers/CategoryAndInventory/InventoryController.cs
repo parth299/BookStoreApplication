@@ -1,4 +1,4 @@
-﻿using BookStoreApplication.Web.DTOs.Inventory;
+using BookStoreApplication.Web.DTOs.Inventory;
 using BookStoreApplication.Web.Services.Inventory;
 using BookStoreApplication.Web.Wrappers;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +9,7 @@ namespace BookStoreApplication.Web.Controllers.CategoryAndInventory
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize(Roles = "Guest,RegisteredUser,StoreOwner,Admin")]
     public class InventoryController
         : ControllerBase
     {
@@ -22,6 +22,7 @@ namespace BookStoreApplication.Web.Controllers.CategoryAndInventory
             _service = service;
         }
 
+        [Authorize(Roles = "StoreOwner,Admin")]
         [HttpPost]
         //[Authorize(Roles = "Admin")]
         public async Task<IActionResult>
@@ -35,6 +36,7 @@ namespace BookStoreApplication.Web.Controllers.CategoryAndInventory
                 .SuccessResponse(id));
         }
 
+        [Authorize(Roles = "StoreOwner,Admin")]
         [HttpPatch("{id}")]
         public async Task<IActionResult>Patch(int id,InventoryPatchDto dto)
         {
@@ -74,6 +76,7 @@ namespace BookStoreApplication.Web.Controllers.CategoryAndInventory
                 .SuccessResponse(data));
         }
 
+        [Authorize(Roles = "StoreOwner,Admin")]
         [HttpPut("{id}")]
         //[Authorize(Roles = "Admin")]
         public async Task<IActionResult>
@@ -101,6 +104,7 @@ namespace BookStoreApplication.Web.Controllers.CategoryAndInventory
                 .SuccessResponse(data));
         }
 
+        [Authorize(Roles = "StoreOwner,Admin")]
         [HttpGet("low-stock")]
         public async Task<IActionResult>
             LowStock()

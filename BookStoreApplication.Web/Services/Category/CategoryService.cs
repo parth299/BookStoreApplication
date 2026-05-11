@@ -4,6 +4,7 @@ using BookStoreApplication.Web.Data;
 using BookStoreApplication.Web.Exceptions;
 using BookStoreApplication.Web.DTOs.Category;
 using BookStoreApplication.Web.Repositories.Category;
+using CategoryEntity = BookStoreApplication.Web.Models.Category;
 
 namespace BookStoreApplication.Web.Services.Category
 {
@@ -35,7 +36,7 @@ namespace BookStoreApplication.Web.Services.Category
             if (await _repository.ExistsByDescriptionAsync(dto.CatDescription))
                 throw new BadRequestException("Category with this description already exists");
 
-            var category = _mapper.Map<Category>(dto);
+            var category = _mapper.Map<CategoryEntity>(dto);
             var result = await _repository.CreateAsync(category);
             return _mapper.Map<CategoryResponseDto>(result);
         }

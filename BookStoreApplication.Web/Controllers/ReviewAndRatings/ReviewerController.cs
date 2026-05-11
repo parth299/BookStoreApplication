@@ -1,11 +1,13 @@
 using BookStoreApplication.Web.DTOs.ReviewsAndRatings;
 using BookStoreApplication.Web.Services.ReviewsAndRatings;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BookStoreApplication.Web.Controllers.ReviewAndRatings
 {
     [Route("api/reviewers")]
     [ApiController]
+    [Authorize(Roles = "Guest,RegisteredUser,StoreOwner,Admin")]
     public class ReviewerController : ControllerBase
     {
         private readonly IReviewerService _reviewerService;
@@ -15,6 +17,7 @@ namespace BookStoreApplication.Web.Controllers.ReviewAndRatings
             _reviewerService = reviewerService;
         }
 
+        [Authorize(Roles = "StoreOwner,Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateReviewerAsync([FromBody] CreateReviewerRequestDto request)
         {

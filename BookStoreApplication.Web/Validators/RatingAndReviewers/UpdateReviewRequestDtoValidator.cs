@@ -1,4 +1,4 @@
-﻿using BookStoreApplication.Web.DTOs.ReviewsAndRatings;
+using BookStoreApplication.Web.DTOs.ReviewsAndRatings;
 using FluentValidation;
 
 namespace BookStoreApplication.Web.Validators.RatingAndReviewers

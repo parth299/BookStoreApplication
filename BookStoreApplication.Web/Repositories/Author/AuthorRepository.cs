@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using BookStoreApplication.Web.Data;
 using BookStoreApplication.Web.Models;
+using AuthorEntity = BookStoreApplication.Web.Models.Author;
 
 namespace BookStoreApplication.Web.Repositories.Author
 {
@@ -13,7 +14,7 @@ namespace BookStoreApplication.Web.Repositories.Author
             _context = context;
         }
 
-        public async Task<IEnumerable<Author>> GetAllAsync(int pageNumber, int pageSize)
+        public async Task<IEnumerable<AuthorEntity>> GetAllAsync(int pageNumber, int pageSize)
         {
             return await _context.Authors
                 .Skip((pageNumber - 1) * pageSize)
@@ -21,12 +22,12 @@ namespace BookStoreApplication.Web.Repositories.Author
                 .ToListAsync();
         }
 
-        public async Task<Author?> GetByIdAsync(int id)
+        public async Task<AuthorEntity?> GetByIdAsync(int id)
         {
             return await _context.Authors.FindAsync(id);
         }
 
-        public async Task<Author?> GetByIdWithBooksAsync(int id)
+        public async Task<AuthorEntity?> GetByIdWithBooksAsync(int id)
         {
             return await _context.Authors
                 .Include(a => a.Bookauthors)
@@ -34,14 +35,14 @@ namespace BookStoreApplication.Web.Repositories.Author
                 .FirstOrDefaultAsync(a => a.AuthorId == id);
         }
 
-        public async Task<IEnumerable<Author>> SearchByNameAsync(string name)
+        public async Task<IEnumerable<AuthorEntity>> SearchByNameAsync(string name)
         {
             return await _context.Authors
                 .Where(a => a.FirstName.Contains(name) || a.LastName.Contains(name))
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Author>> GetByCountryAsync(string country)
+        public async Task<IEnumerable<AuthorEntity>> GetByCountryAsync(string country)
         {
             // Filter by country through books/publisher/state relationship
             return await _context.Authors
@@ -58,21 +59,21 @@ namespace BookStoreApplication.Web.Repositories.Author
                 .AnyAsync(a => a.FirstName == firstName && a.LastName == lastName);
         }
 
-        public async Task<Author> CreateAsync(Author author)
+        public async Task<AuthorEntity> CreateAsync(AuthorEntity author)
         {
             _context.Authors.Add(author);
             await _context.SaveChangesAsync();
             return author;
         }
 
-        public async Task<Author> UpdateAsync(Author author)
+        public async Task<AuthorEntity> UpdateAsync(AuthorEntity author)
         {
             _context.Authors.Update(author);
             await _context.SaveChangesAsync();
             return author;
         }
 
-        public void Update(Author author)
+        public void Update(AuthorEntity author)
         {
             _context.Authors.Update(author);
         }

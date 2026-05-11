@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using BookStoreApplication.Web.Data;
 using BookStoreApplication.Web.Models;
 using BookStoreApplication.Web.Exceptions;
+using CategoryEntity = BookStoreApplication.Web.Models.Category;
 
 namespace BookStoreApplication.Web.Repositories.Category
 {
@@ -14,12 +15,12 @@ namespace BookStoreApplication.Web.Repositories.Category
             _context = context;
         }
 
-        public async Task<IEnumerable<Category>> GetAllAsync()
+        public async Task<IEnumerable<CategoryEntity>> GetAllAsync()
         {
             return await _context.Categories.ToListAsync();
         }
 
-        public async Task<Category?> GetByIdAsync(int id)
+        public async Task<CategoryEntity?> GetByIdAsync(int id)
         {
             return await _context.Categories.FindAsync(id);
         }
@@ -30,14 +31,14 @@ namespace BookStoreApplication.Web.Repositories.Category
                 .AnyAsync(c => c.CatDescription == description);
         }
 
-        public async Task<Category> CreateAsync(Category category)
+        public async Task<CategoryEntity> CreateAsync(CategoryEntity category)
         {
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
             return category;
         }
 
-        public async Task<Category> UpdateAsync(Category category)
+        public async Task<CategoryEntity> UpdateAsync(CategoryEntity category)
         {
             _context.Categories.Update(category);
             await _context.SaveChangesAsync();

@@ -1,14 +1,15 @@
 using BookStoreApplication.Web.Models;
+using CategoryEntity = BookStoreApplication.Web.Models.Category;
 
 namespace BookStoreApplication.Web.Repositories.Category
 {
     public interface ICategoryRepository
     {
-        Task<IEnumerable<Category>> GetAllAsync();
-        Task<Category?> GetByIdAsync(int id);
+        Task<IEnumerable<CategoryEntity>> GetAllAsync();
+        Task<CategoryEntity?> GetByIdAsync(int id);
         Task<bool> ExistsByDescriptionAsync(string description);
-        Task<Category> CreateAsync(Category category);
-        Task<Category> UpdateAsync(Category category);
+        Task<CategoryEntity> CreateAsync(CategoryEntity category);
+        Task<CategoryEntity> UpdateAsync(CategoryEntity category);
         Task<bool> DeleteAsync(int id);
     }
 }
