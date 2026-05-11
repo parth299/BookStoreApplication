@@ -48,6 +48,7 @@ wwwroot/dist/
 Thumbs.db
 
 # Development settings
+appsettings.json
 appsettings.Development.json
 
 # Environment files

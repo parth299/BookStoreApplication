@@ -14,6 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BookDB")));
 
+builder.Services.AddMemoryCache(); // Add in-memory caching services
+
 // Controllers with Global Filters (Validation + Exception Handling)
 builder.Services.AddControllers(options =>
 {
