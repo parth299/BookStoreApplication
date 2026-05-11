@@ -1,5 +1,6 @@
-﻿using BookStoreApplication.Web.DTOs;
+﻿using BookStoreApplication.Web.DTOs.Inventory;
 using BookStoreApplication.Web.Validators;
+using BookStoreApplication.Web.Validators.Inventory;
 using FluentValidation.TestHelper;
 
 namespace BookStoreApplication.Tests.Validators

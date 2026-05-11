@@ -7,20 +7,16 @@ using BookStoreApplication.Web.DTOs.User;
 using BookStoreApplication.Web.Filters;
 using BookStoreApplication.Web.Mapping;
 using BookStoreApplication.Web.Middleware;
-using BookStoreApplication.Web.Middleware.RatingAndReviewers;
 using BookStoreApplication.Web.Models;
 using BookStoreApplication.Web.Repositories;
 using BookStoreApplication.Web.Repositories.Author;
 using BookStoreApplication.Web.Repositories.Category;
 using BookStoreApplication.Web.Repositories.Implementations;
-using BookStoreApplication.Web.Repositories.Interfaces;
 using BookStoreApplication.Web.Repositories.ReviewAndRatings;
 using BookStoreApplication.Web.Repositories.User;
 using BookStoreApplication.Web.Services;
 using BookStoreApplication.Web.Services.Author;
 using BookStoreApplication.Web.Services.Auth;
-using BookStoreApplication.Web.Services.Cart;
-using BookStoreApplication.Web.Services.Category;
 using BookStoreApplication.Web.Services.Inventory;
 using BookStoreApplication.Web.Services.ReviewsAndRatings;
 using BookStoreApplication.Web.services;
@@ -39,6 +35,10 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text;
 using UserEntity = BookStoreApplication.Web.Models.User;
+using BookStoreApplication.Web.Repositories.CartPurchaseInventory;
+using BookStoreApplication.Web.Services.Author_Category;
+using BookStoreApplication.Web.Services.Inventory_Cart_Purchase;
+using BookStoreApplication.Web.Services.Book_Publisher;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -116,8 +116,8 @@ builder.Services.AddScoped<
     InventoryRepository>();
 
 builder.Services.AddScoped<
-    IUserRepository,
-    UserRepository>();
+    IUserIsExistsRepository,
+    UserIsExistsRepository>();
 
 builder.Services.AddScoped<
     IShoppingCartRepository,
@@ -135,7 +135,7 @@ builder.Services.AddScoped<
     IReviewerRepository,
     ReviewerRepository>();
 
-builder.Services.AddScoped<UserReporitory>();
+builder.Services.AddScoped<UserRepository>();
 
 builder.Services.AddScoped<PermRoleRepository>();
 
@@ -288,9 +288,8 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-app.UseMiddleware<ExceptionMiddleware>();
-
-app.UseExceptionHandlingMiddleware();
+//app.UseExceptionHandlingMiddleware();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

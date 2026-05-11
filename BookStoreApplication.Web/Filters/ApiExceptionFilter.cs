@@ -47,16 +47,18 @@ namespace BookStoreApplication.Web.Filters
                     StatusCodes.Status500InternalServerError
             };
 
+            var errors = exception is BaseException
+                ? null
+                : new List<string>
+                {
+                    exception.StackTrace ?? "No stack trace available"
+                };
+
             var response =
                 ApiResponse<object>.FailResponse(
                     exception.Message,
-                    exception is BaseException
-                        ? null
-                        : new List<string>
-                        {
-                            exception.StackTrace
-                            ?? "No stack trace available"
-                        });
+                    statusCode,
+                    errors);
 
             context.Result = new ObjectResult(response)
             {

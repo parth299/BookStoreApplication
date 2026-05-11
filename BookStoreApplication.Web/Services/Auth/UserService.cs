@@ -11,12 +11,12 @@ namespace BookStoreApplication.Web.Services.Auth
 {
     public class UserService: IUserService
     {
-        private readonly UserReporitory _userRepository;
+        private readonly UserRepository _userRepository;
         private readonly IPasswordHasher<UserEntity> _passwordHasher;
         private readonly PermRoleRepository _roleRepository;
         private readonly IJwtTokenService _jwtService;
 
-        public UserService(UserReporitory userReporitory, IPasswordHasher<UserEntity> passwordHasher, PermRoleRepository roleRepository, IJwtTokenService jwtService)
+        public UserService(UserRepository userReporitory, IPasswordHasher<UserEntity> passwordHasher, PermRoleRepository roleRepository, IJwtTokenService jwtService)
         {
             _userRepository = userReporitory;
             _passwordHasher = passwordHasher;

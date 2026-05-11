@@ -1,8 +1,8 @@
-﻿using BookStoreApplication.Web.DTOs;
+﻿using BookStoreApplication.Web.DTOs.Inventory;
 using BookStoreApplication.Web.Exceptions;
 using BookStoreApplication.Web.Models;
-using BookStoreApplication.Web.Repositories.Interfaces;
-using BookStoreApplication.Web.Services;
+using BookStoreApplication.Web.Repositories.CartPurchaseInventory;
+using BookStoreApplication.Web.Services.Inventory_Cart_Purchase;
 using FluentAssertions;
 using Moq;
 
@@ -13,7 +13,7 @@ namespace BookStoreApplication.Tests.Services
         private readonly Mock<IShoppingCartRepository> _cartRepoMock;
         private readonly Mock<IInventoryRepository> _inventoryRepoMock;
         private readonly Mock<IReservationService> _reservationMock;
-        private readonly Mock<IUserRepository> _userRepoMock;
+        private readonly Mock<IUserIsExistsRepository> _userRepoMock;
         private readonly ShoppingCartService _service;
 
         public ShoppingCartServiceTests()
@@ -24,7 +24,7 @@ namespace BookStoreApplication.Tests.Services
 
             _reservationMock = new Mock<IReservationService>();
 
-            _userRepoMock = new Mock<IUserRepository>();
+            _userRepoMock = new Mock<IUserIsExistsRepository>();
 
             _service = new ShoppingCartService(
                 _cartRepoMock.Object,
