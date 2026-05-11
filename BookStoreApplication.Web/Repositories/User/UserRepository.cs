@@ -6,10 +6,10 @@ using UserEntity = BookStoreApplication.Web.Models.User;
 
 namespace BookStoreApplication.Web.Repositories.User 
 {
-    public class UserReporitory {
+    public class UserRepository {
         private readonly AppDbContext _context;
 
-        public UserReporitory(AppDbContext context) {
+        public UserRepository(AppDbContext context) {
             _context = context;
         }
 

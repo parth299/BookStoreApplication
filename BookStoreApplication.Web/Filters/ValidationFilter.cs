@@ -41,6 +41,7 @@ namespace BookStoreApplication.Web.Filters
                 // Return standardized error response
                 var response = ApiResponse<object>.FailResponse(
                     "Validation failed. Please check your input.",
+                    StatusCodes.Status400BadRequest,
                     errors);
 
                 context.Result = new BadRequestObjectResult(response);
