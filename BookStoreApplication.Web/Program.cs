@@ -1,63 +1,115 @@
+using BookStoreApplication.Web.Configurations;
 using BookStoreApplication.Web.Data;
+using BookStoreApplication.Web.DTOs.Author;
+using BookStoreApplication.Web.DTOs.Category;
+using BookStoreApplication.Web.DTOs.ReviewsAndRatings;
+using BookStoreApplication.Web.DTOs.User;
+using BookStoreApplication.Web.Filters;
+using BookStoreApplication.Web.Mapping;
 using BookStoreApplication.Web.Middleware;
+using BookStoreApplication.Web.Middleware.RatingAndReviewers;
+using BookStoreApplication.Web.Models;
+using BookStoreApplication.Web.Repositories;
+using BookStoreApplication.Web.Repositories.Author;
+using BookStoreApplication.Web.Repositories.Category;
 using BookStoreApplication.Web.Repositories.Implementations;
 using BookStoreApplication.Web.Repositories.Interfaces;
+using BookStoreApplication.Web.Repositories.ReviewAndRatings;
+using BookStoreApplication.Web.Repositories.User;
 using BookStoreApplication.Web.Services;
-using BookStoreApplication.Web.Validators;
+using BookStoreApplication.Web.Services.Author;
+using BookStoreApplication.Web.Services.Auth;
+using BookStoreApplication.Web.Services.Cart;
+using BookStoreApplication.Web.Services.Category;
+using BookStoreApplication.Web.Services.Inventory;
+using BookStoreApplication.Web.Services.ReviewsAndRatings;
+using BookStoreApplication.Web.services;
+using BookStoreApplication.Web.Validators.Author;
+using BookStoreApplication.Web.Validators.Category;
+using BookStoreApplication.Web.Validators.Inventory;
+using BookStoreApplication.Web.Validators.RatingAndReviewers;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text;
-
+using UserEntity = BookStoreApplication.Web.Models.User;
 
 var builder = WebApplication.CreateBuilder(args);
-
-
-// ======================================================
-// SERILOG
-// ======================================================
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File(
         "Logs/log-.txt",
-        rollingInterval:
-        RollingInterval.Day)
+        rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
 builder.Host.UseSerilog();
 
-
-// ======================================================
-// DB CONTEXT
-// ======================================================
-
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("BookDB")));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("BookDB")));
 
+builder.Services.Configure<JwtOptions>(
+    builder.Configuration.GetSection("Jwt"));
 
-// ======================================================
-// AUTOMAPPER
-// ======================================================
-
-builder.Services.AddAutoMapper(
-    AppDomain.CurrentDomain
-        .GetAssemblies());
-
-
-// ======================================================
-// MEMORY CACHE
-// ======================================================
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
 
 builder.Services.AddMemoryCache();
 
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ValidationFilter>();
 
-// ======================================================
-// REPOSITORIES
-// ======================================================
+    options.Filters.Add<ApiExceptionFilter>();
+})
+.ConfigureApiBehaviorOptions(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var errors = context.ModelState
+            .Where(x => x.Value?.Errors.Count > 0)
+            .SelectMany(x =>
+                x.Value!.Errors.Select(
+                    error => error.ErrorMessage))
+            .ToList();
+
+        return new BadRequestObjectResult(errors);
+    };
+});
+
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddScoped<
+    IBookRepository,
+    BookRepository>();
+
+builder.Services.AddScoped<
+    IPublisherRepository,
+    PublisherRepository>();
+
+builder.Services.AddScoped<
+    IBookService,
+    BookService>();
+
+builder.Services.AddScoped<
+    IPublisherService,
+    PublisherService>();
+
+builder.Services.AddScoped<
+    IAuthorRepository,
+    AuthorRepository>();
+
+builder.Services.AddScoped<
+    ICategoryRepository,
+    CategoryRepository>();
 
 builder.Services.AddScoped<
     IInventoryRepository,
@@ -75,10 +127,25 @@ builder.Services.AddScoped<
     IPurchaseLogRepository,
     PurchaseLogRepository>();
 
+builder.Services.AddScoped<
+    IBookReviewRepository,
+    BookReviewRepository>();
 
-// ======================================================
-// SERVICES
-// ======================================================
+builder.Services.AddScoped<
+    IReviewerRepository,
+    ReviewerRepository>();
+
+builder.Services.AddScoped<UserReporitory>();
+
+builder.Services.AddScoped<PermRoleRepository>();
+
+builder.Services.AddScoped<
+    IAuthorService,
+    AuthorService>();
+
+builder.Services.AddScoped<
+    ICategoryService,
+    CategoryService>();
 
 builder.Services.AddScoped<
     IInventoryService,
@@ -92,14 +159,32 @@ builder.Services.AddScoped<
     IPurchaseLogService,
     PurchaseLogService>();
 
+builder.Services.AddScoped<
+    IBookReviewService,
+    BookReviewService>();
+
+builder.Services.AddScoped<
+    IReviewerService,
+    ReviewerService>();
+
 builder.Services.AddSingleton<
     IReservationService,
     ReservationService>();
 
+builder.Services.AddScoped<
+    IUserService,
+    UserService>();
 
-// ======================================================
-// FLUENT VALIDATION
-// ======================================================
+builder.Services.AddScoped<
+    IJwtTokenService,
+    JwtTokenService>();
+
+builder.Services.AddScoped<
+    FileUploadService>();
+
+builder.Services.AddScoped<
+    IPasswordHasher<UserEntity>,
+    PasswordHasher<UserEntity>>();
 
 builder.Services
     .AddFluentValidationAutoValidation();
@@ -108,26 +193,39 @@ builder.Services
     .AddValidatorsFromAssemblyContaining<
         InventoryValidator>();
 
+builder.Services
+    .AddValidatorsFromAssemblyContaining<
+        RegisterUserDTO>();
 
-// ======================================================
-// JWT AUTH
-// ======================================================
+builder.Services.AddScoped<
+    IValidator<AuthorRequestDTO>,
+    AuthorValidator>();
+
+builder.Services.AddScoped<
+    IValidator<CategoryRequestDto>,
+    CategoryValidator>();
+
+builder.Services.AddScoped<
+    IValidator<CreateReviewRequestDto>,
+    CreateReviewRequestDtoValidator>();
+
+builder.Services.AddScoped<
+    IValidator<CreateReviewerRequestDto>,
+    CreateReviewerRequestDtoValidator>();
+
+builder.Services.AddScoped<LogActionFilter>();
 
 builder.Services
     .AddAuthentication(
-        JwtBearerDefaults
-            .AuthenticationScheme)
+        JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters =
             new TokenValidationParameters
             {
                 ValidateIssuer = true,
-
                 ValidateAudience = true,
-
                 ValidateLifetime = true,
-
                 ValidateIssuerSigningKey = true,
 
                 ValidIssuer =
@@ -145,32 +243,54 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc(
+        "v1",
+        new OpenApiInfo
+        {
+            Title = "BookStore",
+            Version = "v1"
+        });
 
-// ======================================================
-// CONTROLLERS
-// ======================================================
+    c.AddSecurityDefinition(
+        "Bearer",
+        new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description =
+                "Enter 'Bearer' followed by your JWT token."
+        });
 
-builder.Services.AddControllers();
+    c.AddSecurityRequirement(
+        new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference =
+                        new OpenApiReference
+                        {
+                            Type =
+                                ReferenceType.SecurityScheme,
 
-builder.Services.AddEndpointsApiExplorer();
-
-builder.Services.AddSwaggerGen();
-
-
-// ======================================================
-// BUILD
-// ======================================================
+                            Id = "Bearer"
+                        }
+                },
+                Array.Empty<string>()
+            }
+        });
+});
 
 var app = builder.Build();
 
+app.UseMiddleware<ExceptionMiddleware>();
 
-// ======================================================
-// MIDDLEWARE
-// ======================================================
-
-app.UseMiddleware<
-    ExceptionMiddleware>();
-
+app.UseExceptionHandlingMiddleware();
 
 if (app.Environment.IsDevelopment())
 {
@@ -181,6 +301,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles();
+
 app.UseAuthentication();
 
 app.UseAuthorization();
@@ -188,4 +310,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-

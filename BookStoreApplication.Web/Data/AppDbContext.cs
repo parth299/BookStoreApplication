@@ -1,4 +1,7 @@
-﻿using System;
+using AuthorEntity = BookStoreApplication.Web.Models.Author;
+using CategoryEntity = BookStoreApplication.Web.Models.Category;
+using UserEntity = BookStoreApplication.Web.Models.User;
+using System;
 using System.Collections.Generic;
 using BookStoreApplication.Web;
 using BookStoreApplication.Web.Models;
@@ -13,7 +16,7 @@ public partial class AppDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Author> Authors { get; set; }
+    public virtual DbSet<AuthorEntity> Authors { get; set; }
 
     public virtual DbSet<Book> Books { get; set; }
 
@@ -23,7 +26,7 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Bookreview> Bookreviews { get; set; }
 
-    public virtual DbSet<Category> Categories { get; set; }
+    public virtual DbSet<CategoryEntity> Categories { get; set; }
 
     public virtual DbSet<Inventory> Inventories { get; set; }
 
@@ -39,11 +42,11 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<State> States { get; set; }
 
-    public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<UserEntity> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Author>(entity =>
+        modelBuilder.Entity<AuthorEntity>(entity =>
         {
             entity.HasKey(e => e.AuthorId).HasName("PK__author__8E2731D98C85694A");
 
@@ -168,7 +171,7 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("FK_bookreview_ReviewerID");
         });
 
-        modelBuilder.Entity<Category>(entity =>
+        modelBuilder.Entity<CategoryEntity>(entity =>
         {
             entity.HasKey(e => e.CatId).HasName("PK__category__6A1C8ADA5E7BA58E");
 
@@ -301,7 +304,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.StateName).HasMaxLength(50);
         });
 
-        modelBuilder.Entity<User>(entity =>
+        modelBuilder.Entity<UserEntity>(entity =>
         {
             entity.HasKey(e => e.UserId).HasName("PK__user__1788CCAC7EA07C93");
 

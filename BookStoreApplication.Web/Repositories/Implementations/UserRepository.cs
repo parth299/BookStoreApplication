@@ -1,4 +1,4 @@
-﻿using BookStoreApplication.Web.Data;
+using BookStoreApplication.Web.Data;
 using BookStoreApplication.Web.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
