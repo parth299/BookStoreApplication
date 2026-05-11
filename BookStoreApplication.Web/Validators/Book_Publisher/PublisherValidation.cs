@@ -1,7 +1,7 @@
-using BookStoreApplication.Web.DTOs;
+using BookStoreApplication.Web.DTOs.Book_Publisher;
 using FluentValidation;
 
-namespace BookStoreApplication.Web.Validators;
+namespace BookStoreApplication.Web.Validators.Book_Publisher;
 
 public class PublisherCreateDtoValidator : AbstractValidator<PublisherCreateDto>
 {

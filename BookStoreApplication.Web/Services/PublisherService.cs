@@ -1,8 +1,8 @@
-using BookStoreApplication.Web.DTOs;
 using BookStoreApplication.Web.Exceptions;
 using BookStoreApplication.Web.Models;
-using BookStoreApplication.Web.Repositories;
 using AutoMapper;
+using BookStoreApplication.Web.DTOs.Book_Publisher;
+using BookStoreApplication.Web.Repositories.Book_Publisher;
 
 namespace BookStoreApplication.Web.Services;
 

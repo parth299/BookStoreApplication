@@ -1,7 +1,7 @@
-using BookStoreApplication.Web.DTOs;
+using BookStoreApplication.Web.DTOs.Book_Publisher;
 using BookStoreApplication.Web.Models;
 
-namespace BookStoreApplication.Web.Repositories;
+namespace BookStoreApplication.Web.Repositories.Book_Publisher;
 
 public interface IBookRepository
 {

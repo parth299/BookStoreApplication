@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
-namespace BookStoreApplication.Web.Validators
+namespace BookStoreApplication.Web.Validators.Author
 {
     /// <summary>
     /// Custom Validation Attribute for ISBN-10 or ISBN-13 format validation

@@ -9,11 +9,9 @@ using BookStoreApplication.Web.Mapping;
 using BookStoreApplication.Web.Middleware;
 using BookStoreApplication.Web.Middleware.RatingAndReviewers;
 using BookStoreApplication.Web.Models;
-using BookStoreApplication.Web.Repositories;
 using BookStoreApplication.Web.Repositories.Author;
 using BookStoreApplication.Web.Repositories.Category;
 using BookStoreApplication.Web.Repositories.Implementations;
-using BookStoreApplication.Web.Repositories.Interfaces;
 using BookStoreApplication.Web.Repositories.ReviewAndRatings;
 using BookStoreApplication.Web.Repositories.User;
 using BookStoreApplication.Web.Services;
@@ -39,6 +37,8 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text;
 using UserEntity = BookStoreApplication.Web.Models.User;
+using BookStoreApplication.Web.Repositories.Book_Publisher;
+using BookStoreApplication.Web.Repositories.Inventory_Cart_Purchase.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -94,7 +94,6 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IPublisherRepository,
     PublisherRepository>();
-
 builder.Services.AddScoped<
     IBookService,
     BookService>();

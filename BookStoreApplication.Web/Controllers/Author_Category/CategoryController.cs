@@ -5,7 +5,7 @@ using BookStoreApplication.Web.DTOs.Category;
 using BookStoreApplication.Web.Services.Category;
 using Microsoft.AspNetCore.Authorization;
 
-namespace BookStoreApplication.Web.Controllers.Category
+namespace BookStoreApplication.Web.Controllers.Author_Category
 {
     [ApiController]
     [Route("api/[controller]")]

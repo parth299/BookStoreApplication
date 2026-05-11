@@ -1,7 +1,7 @@
 using BookStoreApplication.Web.DTOs.Inventory;
 using BookStoreApplication.Web.Models;
 
-namespace BookStoreApplication.Web.Repositories.Interfaces
+namespace BookStoreApplication.Web.Repositories.Inventory_Cart_Purchase.Interfaces
 {
     public interface IInventoryRepository
     {

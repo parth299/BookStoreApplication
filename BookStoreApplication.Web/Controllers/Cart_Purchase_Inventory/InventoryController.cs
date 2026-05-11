@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BookStoreApplication.Web.Controllers.CategoryAndInventory
+namespace BookStoreApplication.Web.Controllers.Cart_Purchase_Inventory
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -30,10 +30,13 @@ namespace BookStoreApplication.Web.Controllers.CategoryAndInventory
         {
             var id =
                 await _service.CreateAsync(dto);
-
-            return Ok(
-                ApiResponse<int>
-                .SuccessResponse(id));
+            return CreatedAtAction(
+                nameof(GetById),
+                new { id = id },
+                ApiResponse<int>.SuccessResponse(
+                    StatusCodes.Status201Created,
+                    "Created successfully"
+                ));
         }
 
         [Authorize(Roles = "StoreOwner,Admin")]

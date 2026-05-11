@@ -1,6 +1,6 @@
 using BookStoreApplication.Web.Models;
 
-namespace BookStoreApplication.Web.Repositories;
+namespace BookStoreApplication.Web.Repositories.Book_Publisher;
 
 public interface IPublisherRepository
 {

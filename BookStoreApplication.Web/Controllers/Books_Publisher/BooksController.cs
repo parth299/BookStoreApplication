@@ -1,10 +1,10 @@
-using BookStoreApplication.Web.DTOs;
 using BookStoreApplication.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using BookStoreApplication.Web.Wrapper;
 using Microsoft.AspNetCore.Authorization;
+using BookStoreApplication.Web.DTOs.Book_Publisher;
 
-namespace BookStoreApplication.Web.Controllers;
+namespace BookStoreApplication.Web.Controllers.CategoryAndInventory;
 
 [ApiController]
 [Route("books")]

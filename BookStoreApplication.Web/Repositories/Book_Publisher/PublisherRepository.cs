@@ -3,7 +3,7 @@ using BookStoreApplication.Web.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookStoreApplication.Web.Repositories;
+namespace BookStoreApplication.Web.Repositories.Book_Publisher;
 
 public class PublisherRepository : IPublisherRepository
 {

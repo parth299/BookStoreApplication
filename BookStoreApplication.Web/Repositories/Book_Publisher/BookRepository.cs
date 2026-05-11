@@ -1,10 +1,10 @@
 using BookStoreApplication.Web.Data;
-using BookStoreApplication.Web.DTOs;
+using BookStoreApplication.Web.DTOs.Book_Publisher;
 using BookStoreApplication.Web.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookStoreApplication.Web.Repositories;
+namespace BookStoreApplication.Web.Repositories.Book_Publisher;
 public class BookRepository : IBookRepository
 {
     private readonly AppDbContext _context;

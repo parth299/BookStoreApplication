@@ -1,4 +1,4 @@
-namespace BookStoreApplication.Web.DTOs;
+namespace BookStoreApplication.Web.DTOs.Book_Publisher;
 
 public class BookCreateDto
 {

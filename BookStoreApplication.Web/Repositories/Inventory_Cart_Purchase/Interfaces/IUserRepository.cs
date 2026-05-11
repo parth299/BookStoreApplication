@@ -1,4 +1,4 @@
-namespace BookStoreApplication.Web.Repositories.Interfaces
+namespace BookStoreApplication.Web.Repositories.Inventory_Cart_Purchase.Interfaces
 {
     public interface IUserRepository
     {

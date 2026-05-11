@@ -8,7 +8,7 @@ using BookStoreApplication.Web.DTOs.Author;
 using BookStoreApplication.Web.Services.Author;
 using Microsoft.AspNetCore.Authorization;
 
-namespace BookStoreApplication.Web.Controllers.Auth
+namespace BookStoreApplication.Web.Controllers.Author
 {
     [ApiController]
     [Route("api/[controller]")]
