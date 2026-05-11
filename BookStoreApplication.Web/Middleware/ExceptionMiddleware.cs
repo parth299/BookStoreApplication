@@ -8,11 +8,15 @@ namespace BookStoreApplication.Web.Middleware
     public class ExceptionMiddleware
     {
         private readonly RequestDelegate _next;
+
         private readonly ILogger<ExceptionMiddleware> _logger;
 
-        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
+        public ExceptionMiddleware(
+            RequestDelegate next,
+            ILogger<ExceptionMiddleware> logger)
         {
             _next = next;
+
             _logger = logger;
         }
 
@@ -24,28 +28,51 @@ namespace BookStoreApplication.Web.Middleware
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unhandled exception occurred");
-                await HandleExceptionAsync(context, ex);
+                _logger.LogError(
+                    ex,
+                    "Unhandled exception occurred");
+
+                await HandleExceptionAsync(
+                    context,
+                    ex);
             }
         }
 
-        private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+        private static async Task HandleExceptionAsync(
+            HttpContext context,
+            Exception exception)
         {
-            var statusCode = exception switch
+            context.Response.ContentType =
+                "application/json";
+
+            int statusCode = exception switch
             {
-                NotFoundException => (int)HttpStatusCode.NotFound,
-                BadRequestException => (int)HttpStatusCode.BadRequest,
-                UnauthorizedException => (int)HttpStatusCode.Unauthorized,
-                _ => (int)HttpStatusCode.InternalServerError
+                NotFoundException =>
+                    (int)HttpStatusCode.NotFound,
+
+                BadRequestException =>
+                    (int)HttpStatusCode.BadRequest,
+
+                UnauthorizedException =>
+                    (int)HttpStatusCode.Unauthorized,
+
+                _ =>
+                    (int)HttpStatusCode.InternalServerError
             };
 
-            var response = ApiResponse.Fail<string>(exception.Message, 
-                exception is BaseException ? null : new List<string> { exception.Message });
-
-            context.Response.ContentType = "application/json";
             context.Response.StatusCode = statusCode;
 
-            return context.Response.WriteAsync(JsonSerializer.Serialize(response));
+            ApiResponse<string> response =
+                exception is BaseException
+                    ? ApiResponse<string>.FailResponse(
+                        exception.Message)
+                    : ApiResponse<string>.FailResponse(
+                        "An unexpected error occurred.");
+
+            var json =
+                JsonSerializer.Serialize(response);
+
+            await context.Response.WriteAsync(json);
         }
     }
 }

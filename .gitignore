@@ -84,4 +84,6 @@ node_modules/
 *.temp
 
 # Generated files
-Generated/
+Generated/appsetting.json
+demo.cs
+appsettings.json
