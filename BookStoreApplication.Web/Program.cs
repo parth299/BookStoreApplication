@@ -38,6 +38,7 @@ using UserEntity = BookStoreApplication.Web.Models.User;
 using BookStoreApplication.Web.Repositories.Book_Publisher;
 using BookStoreApplication.Web.Services.Book_Publisher;
 using BookStoreApplication.Web.Services.User;
+using BookStoreApplication.Web.Mappings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,6 +59,7 @@ builder.Services.Configure<JwtOptions>(
     builder.Configuration.GetSection("Jwt"));
 
 builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<UserProfile>());
 
 builder.Services.AddMemoryCache();
 

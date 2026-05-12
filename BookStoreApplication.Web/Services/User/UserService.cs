@@ -1,5 +1,7 @@
+using AutoMapper;
 using BookStoreApplication.Web.DTOs.Author;
 using BookStoreApplication.Web.DTOs.User;
+using BookStoreApplication.Web.Exceptions;
 using BookStoreApplication.Web.Models;
 using BookStoreApplication.Web.Repositories.User;
 using BookStoreApplication.Web.Services.Auth;
@@ -14,13 +16,15 @@ namespace BookStoreApplication.Web.Services.User
         private readonly IPasswordHasher<UserEntity> _passwordHasher;
         private readonly PermRoleRepository _roleRepository;
         private readonly IJwtTokenService _jwtService;
+        private readonly IMapper _mapper;
 
-        public UserService(UserRepository userReporitory, IPasswordHasher<UserEntity> passwordHasher, PermRoleRepository roleRepository, IJwtTokenService jwtService)
+        public UserService(UserRepository userReporitory, IPasswordHasher<UserEntity> passwordHasher, PermRoleRepository roleRepository, IJwtTokenService jwtService, IMapper mapper)
         {
             _userRepository = userReporitory;
             _passwordHasher = passwordHasher;
             _roleRepository = roleRepository;
             _jwtService = jwtService;
+            _mapper = mapper;
         }
 
         public async Task<UserEntity?> ChangePasswordAsync(int id, string updated_password)
@@ -29,7 +33,7 @@ namespace BookStoreApplication.Web.Services.User
 
             if(existing_user is null)
             {
-                return null!;
+                throw new NotFoundException($"User with id: {id} does not exists");
             }
 
             existing_user.Password = updated_password;
@@ -51,19 +55,16 @@ namespace BookStoreApplication.Web.Services.User
         {
             if(request is null)
             {
-                return null!;
+                throw new BadRequestException($"User details Incomplete :: Provide complete user details for updation");
             }
 
             var existing_user = await _userRepository.GetByUserId(request.UserId);
             if(existing_user is null)
             {
-                return null!;
+                throw new NotFoundException($"User Not Found :: Username : {request.UserName}");
             }
 
-            existing_user.LastName = request.LastName;
-            existing_user.FirstName = request.FirstName;
-            existing_user.UserName = request.UserName;
-            existing_user.PhoneNumber = request.PhoneNumber;
+            _mapper.Map(request, existing_user);
 
             await _userRepository.UpdateUser(existing_user);
 
@@ -142,26 +143,21 @@ namespace BookStoreApplication.Web.Services.User
 
         public async Task<RegisterUserDTO?> RegisterAsync(RegisterUserDTO request) {
             if(request is null) {
-                return null!;
+                throw new BadRequestException($"Incomplete User Details :: Provide complete request body");
             } 
 
             var existing_user = await _userRepository.GetByUserNameAsync(request.UserName);
 
             if(existing_user is not null)
             {
-                return null!;
+                throw new BadRequestException($"User Already Exists With Username : {request.UserName}");
             }
 
             // Register the user
-            var user = new UserEntity();
+            var user = _mapper.Map<UserEntity>(request);
 
-            user.UserName = request.UserName;
-            user.FirstName = request.FirstName;
-            user.LastName = request.LastName;
-            user.PhoneNumber = request.PhoneNumber;
-            user.RoleNumber = request.RoleNumber;
             user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
-            user.Password = request.Password;
+            user.Password = request.Password;   
 
             await _userRepository.CreateUserAsync(user);
             
