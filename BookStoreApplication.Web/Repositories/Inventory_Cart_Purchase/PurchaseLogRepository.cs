@@ -1,12 +1,12 @@
 using BookStoreApplication.Web.Data;
 using BookStoreApplication.Web.Models;
-using BookStoreApplication.Web.Repositories.Inventory_Cart_Purchase.Interfaces;
+using BookStoreApplication.Web.Repositories.Inventory_Cart_Purchase;
+
 using Microsoft.EntityFrameworkCore;
 
-namespace BookStoreApplication.Web.Repositories.Implementations
+namespace BookStoreApplication.Web.Repositories.Inventory_Cart_Purchase
 {
-    public class PurchaseLogRepository
-    : IPurchaseLogRepository
+    public class PurchaseLogRepository: IPurchaseLogRepository
     {
         private readonly AppDbContext _context;
 
@@ -20,8 +20,7 @@ namespace BookStoreApplication.Web.Repositories.Implementations
             await _context.Purchaselogs.AddAsync(log);
         }
 
-        public async Task<IEnumerable<Purchaselog>>
-            GetByUserAsync(int userId)
+        public async Task<IEnumerable<Purchaselog>>GetByUserAsync(int userId)
         {
             return await _context.Purchaselogs
                 .Where(x => x.UserId == userId)

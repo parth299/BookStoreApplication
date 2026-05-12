@@ -8,10 +8,11 @@ public class BookCreateDtoValidator : AbstractValidator<BookCreateDto>
     public BookCreateDtoValidator()
     {
         RuleFor(x => x.Isbn)
-            .Cascade(CascadeMode.Stop)
-            .NotEmpty().WithMessage("ISBN is required.")
-            .Must(isbn => isbn.Trim().Length is >= 10 and <= 13)
-            .WithMessage("ISBN must be between 10 and 13 characters.");
+    .Cascade(CascadeMode.Stop)
+    .NotEmpty()
+        .WithMessage("ISBN is required.")
+    .Matches(@"^[0-9]{1}-[0-9]{3}-[0-9]{5}-[0-9]{1}$")
+        .WithMessage("ISBN format must be like 1-111-11111-1");
 
         RuleFor(x => x.Title)
             .NotEmpty().WithMessage("Title is required.")

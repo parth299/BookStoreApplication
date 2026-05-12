@@ -1,9 +1,9 @@
 using BookStoreApplication.Web.DTOs.ReviewsAndRatings;
-using BookStoreApplication.Web.Services.ReviewsAndRatings;
+using BookStoreApplication.Web.Services.Reviews_Ratings;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
-namespace BookStoreApplication.Web.Controllers.ReviewAndRatings
+namespace BookStoreApplication.Web.Controllers.Reviewers_Reviews
 {
     [Route("api/reviewers")]
     [ApiController]

@@ -1,14 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using BookStoreApplication.Web.Models;
-using BookStoreApplication.Web.Services;
 using BookStoreApplication.Web.Wrappers;
 using BookStoreApplication.Web.Filters;
 using BookStoreApplication.Web.DTOs.Author;
-using BookStoreApplication.Web.Services.Author;
+using BookStoreApplication.Web.Services.Author_Category;
 using Microsoft.AspNetCore.Authorization;
 
-namespace BookStoreApplication.Web.Controllers.Author
+namespace BookStoreApplication.Web.Controllers.Author_Category
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -39,16 +38,18 @@ namespace BookStoreApplication.Web.Controllers.Author
                     .Select(e => e.ErrorMessage)
                     .ToList();
 
-                return BadRequest(
-                    ApiResponse<AuthorResponseDTO>
-                        .FailResponse("Validation failed", errors));
+                var response = ApiResponse<AuthorResponseDTO>
+                    .FailResponse("Validation failed", 400, errors);
+
+                return StatusCode(response.StatusCode, response);
             }
 
             var result = await _service.CreateAsync(dto);
 
-            return Ok(
-                ApiResponse<AuthorResponseDTO>
-                    .SuccessResponse(result, "Author created"));
+            var success = ApiResponse<AuthorResponseDTO>
+                .SuccessResponse(result, "Author created", 201);
+
+            return StatusCode(success.StatusCode, success);
         }
 
         [HttpGet]
@@ -57,9 +58,10 @@ namespace BookStoreApplication.Web.Controllers.Author
         {
             var result = await _service.GetAllAsync(filter);
 
-            return Ok(
-                ApiResponse<IEnumerable<AuthorResponseDTO>>
-                    .SuccessResponse(result));
+            var response = ApiResponse<IEnumerable<AuthorResponseDTO>>
+                .SuccessResponse(result, "Authors fetched successfully.", 200);
+
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("{id:int:min(1)}")]
@@ -70,14 +72,16 @@ namespace BookStoreApplication.Web.Controllers.Author
 
             if (result == null)
             {
-                return NotFound(
-                    ApiResponse<AuthorResponseDTO>
-                        .FailResponse($"Author {id} not found"));
+                var notFound = ApiResponse<AuthorResponseDTO>
+                    .NotFound($"Author {id} not found");
+
+                return StatusCode(notFound.StatusCode, notFound);
             }
 
-            return Ok(
-                ApiResponse<AuthorResponseDTO>
-                    .SuccessResponse(result));
+            var response = ApiResponse<AuthorResponseDTO>
+                .SuccessResponse(result, "Author fetched successfully.", 200);
+
+            return StatusCode(response.StatusCode, response);
         }
 
         [Authorize(Roles = "StoreOwner,Admin")]
@@ -90,14 +94,16 @@ namespace BookStoreApplication.Web.Controllers.Author
 
             if (result == null)
             {
-                return NotFound(
-                    ApiResponse<AuthorResponseDTO>
-                        .FailResponse($"Author {id} not found"));
+                var notFound = ApiResponse<AuthorResponseDTO>
+                    .NotFound($"Author {id} not found");
+
+                return StatusCode(notFound.StatusCode, notFound);
             }
 
-            return Ok(
-                ApiResponse<AuthorResponseDTO>
-                    .SuccessResponse(result, "Author updated"));
+            var response = ApiResponse<AuthorResponseDTO>
+                .SuccessResponse(result, "Author updated", 200);
+
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("search")]
@@ -110,9 +116,10 @@ namespace BookStoreApplication.Web.Controllers.Author
         {
             var result = await _service.SearchByNameAsync(name);
 
-            return Ok(
-                ApiResponse<IEnumerable<AuthorResponseDTO>>
-                    .SuccessResponse(result));
+            var response = ApiResponse<IEnumerable<AuthorResponseDTO>>
+                .SuccessResponse(result, "Author search completed successfully.", 200);
+
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("{id:int:min(1)}/books")]
@@ -123,14 +130,16 @@ namespace BookStoreApplication.Web.Controllers.Author
 
             if (result == null)
             {
-                return NotFound(
-                    ApiResponse<AuthorWithBooksResponseDTO>
-                        .FailResponse($"Author {id} not found"));
+                var notFound = ApiResponse<AuthorWithBooksResponseDTO>
+                    .NotFound($"Author {id} not found");
+
+                return StatusCode(notFound.StatusCode, notFound);
             }
 
-            return Ok(
-                ApiResponse<AuthorWithBooksResponseDTO>
-                    .SuccessResponse(result));
+            var response = ApiResponse<AuthorWithBooksResponseDTO>
+                .SuccessResponse(result, "Author books fetched successfully.", 200);
+
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("country/{country:alpha:minlength(2):maxlength(50)}")]
@@ -139,9 +148,10 @@ namespace BookStoreApplication.Web.Controllers.Author
         {
             var result = await _service.GetByCountryAsync(country);
 
-            return Ok(
-                ApiResponse<IEnumerable<AuthorResponseDTO>>
-                    .SuccessResponse(result));
+            var response = ApiResponse<IEnumerable<AuthorResponseDTO>>
+                .SuccessResponse(result, "Authors fetched successfully.", 200);
+
+            return StatusCode(response.StatusCode, response);
         }
 
         [Authorize(Roles = "StoreOwner,Admin")]
@@ -153,18 +163,20 @@ namespace BookStoreApplication.Web.Controllers.Author
         {
             if (photo == null || photo.Length == 0)
             {
-                return BadRequest(
-                    ApiResponse<string>
-                        .FailResponse("No photo file provided"));
+                var bad = ApiResponse<string>
+                    .BadRequest("No photo file provided");
+
+                return StatusCode(bad.StatusCode, bad);
             }
 
             var author = await _service.GetByIdAsync(id);
 
             if (author == null)
             {
-                return NotFound(
-                    ApiResponse<string>
-                        .FailResponse($"Author {id} not found"));
+                var notFound = ApiResponse<string>
+                    .NotFound($"Author {id} not found");
+
+                return StatusCode(notFound.StatusCode, notFound);
             }
 
             try
@@ -175,29 +187,25 @@ namespace BookStoreApplication.Web.Controllers.Author
 
                 if (!string.IsNullOrEmpty(author.Photo))
                 {
-                    _fileUploadService
-                        .DeleteAuthorPhoto(author.Photo);
+                    _fileUploadService.DeleteAuthorPhoto(author.Photo);
                 }
 
                 await _service.UpdatePhotoAsync(id, filePath);
 
-                return Ok(
-                    ApiResponse<string>
-                        .SuccessResponse(
-                            filePath,
-                            "Photo uploaded and saved successfully"));
+                var response = ApiResponse<string>
+                    .SuccessResponse(filePath, "Photo uploaded and saved successfully", 200);
+
+                return StatusCode(response.StatusCode, response);
             }
             catch (InvalidOperationException ex)
             {
-                return BadRequest(
-                    ApiResponse<string>
-                        .FailResponse(ex.Message));
+                var bad = ApiResponse<string>.BadRequest(ex.Message);
+                return StatusCode(bad.StatusCode, bad);
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(
-                    ApiResponse<string>
-                        .FailResponse(ex.Message));
+                var bad = ApiResponse<string>.BadRequest(ex.Message);
+                return StatusCode(bad.StatusCode, bad);
             }
         }
 
@@ -210,16 +218,18 @@ namespace BookStoreApplication.Web.Controllers.Author
 
             if (author == null)
             {
-                return NotFound(
-                    ApiResponse<bool>
-                        .FailResponse($"Author {id} not found"));
+                var notFound = ApiResponse<bool>
+                    .NotFound($"Author {id} not found");
+
+                return StatusCode(notFound.StatusCode, notFound);
             }
 
             if (string.IsNullOrEmpty(author.Photo))
             {
-                return BadRequest(
-                    ApiResponse<bool>
-                        .FailResponse("No photo to delete"));
+                var bad = ApiResponse<bool>
+                    .BadRequest("No photo to delete");
+
+                return StatusCode(bad.StatusCode, bad);
             }
 
             var deleted =
@@ -228,13 +238,13 @@ namespace BookStoreApplication.Web.Controllers.Author
 
             await _service.UpdatePhotoAsync(id, null);
 
-            return Ok(
-                ApiResponse<bool>
-                    .SuccessResponse(
-                        deleted,
-                        deleted
-                            ? "Photo deleted"
-                            : "Photo not found on disk"));
+            var response = ApiResponse<bool>
+                .SuccessResponse(
+                    deleted,
+                    deleted ? "Photo deleted" : "Photo not found on disk",
+                    200);
+
+            return StatusCode(response.StatusCode, response);
         }
     }
 }

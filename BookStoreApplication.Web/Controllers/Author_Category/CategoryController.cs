@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using BookStoreApplication.Web.Wrappers;
 using BookStoreApplication.Web.Filters;
 using BookStoreApplication.Web.DTOs.Category;
-using BookStoreApplication.Web.Services.Category;
 using Microsoft.AspNetCore.Authorization;
+using BookStoreApplication.Web.Services.Author_Category;
 
 namespace BookStoreApplication.Web.Controllers.Author_Category
 {
@@ -26,10 +26,10 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
         {
             var result = await _service.CreateAsync(dto);
 
-            return Ok(
-                ApiResponse<CategoryResponseDto>.SuccessResponse(
-                    result,
-                    "Category created"));
+            var response = ApiResponse<CategoryResponseDto>
+                .SuccessResponse(result, "Category created");
+
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet]
@@ -38,9 +38,10 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
         {
             var result = await _service.GetAllAsync();
 
-            return Ok(
-                ApiResponse<IEnumerable<CategoryResponseDto>>
-                    .SuccessResponse(result));
+            var response = ApiResponse<IEnumerable<CategoryResponseDto>>
+                .SuccessResponse(result, "Success");
+
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("{id:int:min(1)}")]
@@ -52,14 +53,16 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
 
             if (result == null)
             {
-                return NotFound(
-                    ApiResponse<CategoryResponseDto>.FailResponse(
-                        $"Category {id} not found"));
+                var notFound = ApiResponse<CategoryResponseDto>
+                    .NotFound($"Category {id} not found");
+
+                return StatusCode(notFound.StatusCode, notFound);
             }
 
-            return Ok(
-                ApiResponse<CategoryResponseDto>.SuccessResponse(
-                    result));
+            var response = ApiResponse<CategoryResponseDto>
+                .SuccessResponse(result);
+
+            return StatusCode(response.StatusCode, response);
         }
 
         [Authorize(Roles = "StoreOwner,Admin")]
@@ -75,25 +78,26 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
                     .Select(e => e.ErrorMessage)
                     .ToList();
 
-                return BadRequest(
-                    ApiResponse<CategoryResponseDto>.FailResponse(
-                        "Validation failed",
-                        errors));
+                var bad = ApiResponse<CategoryResponseDto>
+                    .BadRequest("Validation failed", errors);
+
+                return StatusCode(bad.StatusCode, bad);
             }
 
             var result = await _service.UpdateAsync(id, dto);
 
             if (result == null)
             {
-                return NotFound(
-                    ApiResponse<CategoryResponseDto>.FailResponse(
-                        $"Category {id} not found"));
+                var notFound = ApiResponse<CategoryResponseDto>
+                    .NotFound($"Category {id} not found");
+
+                return StatusCode(notFound.StatusCode, notFound);
             }
 
-            return Ok(
-                ApiResponse<CategoryResponseDto>.SuccessResponse(
-                    result,
-                    "Category updated"));
+            var response = ApiResponse<CategoryResponseDto>
+                .SuccessResponse(result, "Category updated");
+
+            return StatusCode(response.StatusCode, response);
         }
 
         [Authorize(Roles = "StoreOwner,Admin")]
@@ -105,15 +109,16 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
 
             if (!result)
             {
-                return NotFound(
-                    ApiResponse<bool>.FailResponse(
-                        $"Category {id} not found"));
+                var notFound = ApiResponse<bool>
+                    .NotFound($"Category {id} not found");
+
+                return StatusCode(notFound.StatusCode, notFound);
             }
 
-            return Ok(
-                ApiResponse<bool>.SuccessResponse(
-                    true,
-                    "Category deleted successfully"));
+            var response = ApiResponse<bool>
+                .SuccessResponse(true, "Category deleted successfully");
+
+            return StatusCode(response.StatusCode, response);
         }
     }
 }

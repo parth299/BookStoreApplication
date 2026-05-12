@@ -1,9 +1,9 @@
 using BookStoreApplication.Web.Data;
 using BookStoreApplication.Web.Models;
-using BookStoreApplication.Web.Repositories.Inventory_Cart_Purchase.Interfaces;
+using BookStoreApplication.Web.Repositories.Inventory_Cart_Purchase;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookStoreApplication.Web.Repositories.Implementations
+namespace BookStoreApplication.Web.Repositories.Inventory_Cart_Purchase
 {
     public class ShoppingCartRepository
     : IShoppingCartRepository
