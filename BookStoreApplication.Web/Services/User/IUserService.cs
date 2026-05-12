@@ -1,18 +1,24 @@
 using BookStoreApplication.Web.DTOs.Author;
 using BookStoreApplication.Web.DTOs.User;
-using BookStoreApplication.Web.Models;
+using BookStoreApplication.Web.Wrappers;
 using UserEntity = BookStoreApplication.Web.Models.User;
 
 namespace BookStoreApplication.Web.Services.User
 {
     public interface IUserService
     {
-        Task<RegisterUserDTO?> RegisterAsync (RegisterUserDTO request);
-        Task<AuthResponseDTO> LoginAsync(LoginUserDTO request);
-        Task<List<UserEntity>> GetUsersAsync();
-        Task<UserEntity?> GetUserProfileAsync(int id);
-        Task<UserEntity?> UpdateUserAsync(UpdateUserDTO user);
-        Task<UserEntity?> ChangePasswordAsync(int id, string updated_password);
-        Task<List<UserEntity>> GetUsersByRoleId(int roleId);
+        Task<ApiResponse<List<UserEntity>>> GetUsersByRoleId(int roleId);
+
+        Task<ApiResponse<List<UserEntity>>> GetUsersAsync();
+
+        Task<ApiResponse<string>> ChangePasswordAsync(int id, string updatedPassword);
+
+        Task<ApiResponse<UserEntity>> GetUserProfileAsync(int id);
+
+        Task<ApiResponse<string>> RegisterAsync(RegisterUserDTO request);
+
+        Task<ApiResponse<AuthResponseDTO>> LoginAsync(LoginUserDTO request);
+
+        Task<ApiResponse<UserEntity>> UpdateUserAsync(UpdateUserDTO request);
     }
 }

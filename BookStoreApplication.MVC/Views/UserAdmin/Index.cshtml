@@ -1,0 +1,61 @@
+@model BookStoreApplication.MVC.Models.UserListViewModel
+
+@{
+    ViewData["Title"] = "User Administration";
+}
+
+<div class="container py-5 animate-fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="page-header m-0">User Management</h2>
+        <div class="text-muted small">Total Users: @Model.Users.Count</div>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger mb-4">@TempData["ErrorMessage"]</div>
+    }
+
+    <div class="glass-card p-0 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4 py-3 text-secondary small text-uppercase fw-bold">User</th>
+                        <th class="py-3 text-secondary small text-uppercase fw-bold">Username</th>
+                        <th class="py-3 text-secondary small text-uppercase fw-bold">Phone</th>
+                        <th class="py-3 text-secondary small text-uppercase fw-bold">Role ID</th>
+                        <th class="pe-4 py-3 text-end text-secondary small text-uppercase fw-bold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.Users)
+                    {
+                        <tr>
+                            <td class="ps-4 py-3">
+                                <div class="d-flex align-items-center">
+                                    <img src="https://ui-avatars.com/api/?name=@user.FirstName+@user.LastName&background=random&size=32" class="rounded-circle me-2" alt="" />
+                                    <div>
+                                        <div class="fw-bold">@user.FirstName @user.LastName</div>
+                                        <div class="text-muted small">ID: #@user.UserId</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 text-muted">@@@user.UserName</td>
+                            <td class="py-3 text-muted">@(user.PhoneNumber ?? "N/A")</td>
+                            <td class="py-3">
+                                <span class="badge @(user.RoleNumber == 3 ? "bg-danger" : user.RoleNumber == 2 ? "bg-warning" : "bg-info")">
+                                    Role @user.RoleNumber
+                                </span>
+                            </td>
+                            <td class="pe-4 py-3 text-end">
+                                @* <a asp-controller="Account" asp-action="Profile" asp-route-id="@user.UserId" class="btn btn-sm btn-outline-primary rounded-pill px-3 me-1">Edit</a> *@
+                                <button class="btn btn-sm btn-outline-primary rounded-pill px-3">Edit</button>
+                                <button class="btn btn-sm btn-outline-danger rounded-pill px-3">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

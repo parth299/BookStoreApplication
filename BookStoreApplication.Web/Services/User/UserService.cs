@@ -1,16 +1,15 @@
 using AutoMapper;
 using BookStoreApplication.Web.DTOs.Author;
 using BookStoreApplication.Web.DTOs.User;
-using BookStoreApplication.Web.Exceptions;
-using BookStoreApplication.Web.Models;
 using BookStoreApplication.Web.Repositories.User;
 using BookStoreApplication.Web.Services.Auth;
+using BookStoreApplication.Web.Wrappers;
 using Microsoft.AspNetCore.Identity;
 using UserEntity = BookStoreApplication.Web.Models.User;
 
 namespace BookStoreApplication.Web.Services.User
 {
-    public class UserService: IUserService
+    public class UserService : IUserService
     {
         private readonly UserRepository _userRepository;
         private readonly IPasswordHasher<UserEntity> _passwordHasher;
@@ -18,150 +17,212 @@ namespace BookStoreApplication.Web.Services.User
         private readonly IJwtTokenService _jwtService;
         private readonly IMapper _mapper;
 
-        public UserService(UserRepository userReporitory, IPasswordHasher<UserEntity> passwordHasher, PermRoleRepository roleRepository, IJwtTokenService jwtService, IMapper mapper)
+        public UserService(
+            UserRepository userRepository,
+            IPasswordHasher<UserEntity> passwordHasher,
+            PermRoleRepository roleRepository,
+            IJwtTokenService jwtService,
+            IMapper mapper)
         {
-            _userRepository = userReporitory;
+            _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _roleRepository = roleRepository;
             _jwtService = jwtService;
             _mapper = mapper;
         }
 
-        public async Task<UserEntity?> ChangePasswordAsync(int id, string updated_password)
-        {
-            var existing_user = await _userRepository.GetByUserId(id);
-
-            if(existing_user is null)
-            {
-                throw new NotFoundException($"User with id: {id} does not exists");
-            }
-
-            existing_user.Password = updated_password;
-            existing_user.PasswordHash = _passwordHasher.HashPassword(existing_user, updated_password);
-
-            await _userRepository.UpdatePassword(existing_user);
-
-            return existing_user;
-        }
-
-        public async Task<List<UserEntity>> GetUsersByRoleId(int roleId)
+        public async Task<ApiResponse<List<UserEntity>>> GetUsersByRoleId(int roleId)
         {
             var users = await _userRepository.GetUsersByRoleId(roleId);
 
-            return users;
-        }
-
-        public async Task<UserEntity?> UpdateUserAsync(UpdateUserDTO request)
-        {
-            if(request is null)
+            if (users == null || !users.Any())
             {
-                throw new BadRequestException($"User details Incomplete :: Provide complete user details for updation");
+                return ApiResponse<List<UserEntity>>.NotFound(
+                    $"No users found for role id {roleId}"
+                );
             }
 
-            var existing_user = await _userRepository.GetByUserId(request.UserId);
-            if(existing_user is null)
+            return ApiResponse<List<UserEntity>>.SuccessResponse(
+                users,
+                "Users fetched successfully"
+            );
+        }
+
+        public async Task<ApiResponse<List<UserEntity>>> GetUsersAsync()
+        {
+            var users = await _userRepository.GetAllUsers();
+
+            if (users == null || !users.Any())
             {
-                throw new NotFoundException($"User Not Found :: Username : {request.UserName}");
+                return ApiResponse<List<UserEntity>>.NotFound("No users found");
             }
 
-            _mapper.Map(request, existing_user);
-
-            await _userRepository.UpdateUser(existing_user);
-
-            return existing_user;
+            return ApiResponse<List<UserEntity>>.SuccessResponse(
+                users,
+                "Users fetched successfully"
+            );
         }
 
-        public async Task<UserEntity?> GetUserProfileAsync(int id)
+        public async Task<ApiResponse<string>> ChangePasswordAsync(int id, string updatedPassword)
         {
-            return await _userRepository.GetByUserId(id);
+            var existingUser = await _userRepository.GetByUserId(id);
+
+            if (existingUser == null)
+            {
+                return ApiResponse<string>.NotFound(
+                    $"User with id {id} not found"
+                );
+            }
+
+            existingUser.Password = updatedPassword;
+            existingUser.PasswordHash =
+                _passwordHasher.HashPassword(existingUser, updatedPassword);
+
+            await _userRepository.UpdatePassword(existingUser);
+
+            return ApiResponse<string>.MessageResponse(
+                "Password updated successfully"
+            );
         }
 
-        public async Task<List<UserEntity>> GetUsersAsync()
+        public async Task<ApiResponse<UserEntity>> GetUserProfileAsync(int id)
         {
-            return await _userRepository.GetAllUsers();
+            var user = await _userRepository.GetByUserId(id);
+
+            if (user == null)
+            {
+                return ApiResponse<UserEntity>.NotFound(
+                    $"User with id {id} not found"
+                );
+            }
+
+            return ApiResponse<UserEntity>.SuccessResponse(
+                user,
+                "User profile fetched successfully"
+            );
         }
 
-        public async Task<AuthResponseDTO> LoginAsync(LoginUserDTO request)
+        public async Task<ApiResponse<string>> RegisterAsync(RegisterUserDTO request)
         {
-            if (request is null ||
+            if (request == null)
+            {
+                return ApiResponse<string>.BadRequest(
+                    "Request body is required"
+                );
+            }
+
+            var existingUser =
+                await _userRepository.GetByUserNameAsync(request.UserName);
+
+            if (existingUser != null)
+            {
+                return ApiResponse<string>.BadRequest(
+                    $"User already exists with username {request.UserName}"
+                );
+            }
+
+            var user = _mapper.Map<UserEntity>(request);
+
+            user.PasswordHash =
+                _passwordHasher.HashPassword(user, request.Password);
+
+            user.Password = request.Password;
+
+            await _userRepository.CreateUserAsync(user);
+
+            return ApiResponse<string>.CreatedResponse(
+                "User registered successfully"
+            );
+        }
+
+        public async Task<ApiResponse<AuthResponseDTO>> LoginAsync(LoginUserDTO request)
+        {
+            if (request == null ||
                 string.IsNullOrWhiteSpace(request.UserName) ||
                 string.IsNullOrWhiteSpace(request.Password))
             {
-                return new AuthResponseDTO
-                {
-                    Success = false,
-                    Message = "Provide username and password"
-                };
+                return ApiResponse<AuthResponseDTO>.BadRequest(
+                    "Username and password are required"
+                );
             }
 
-            var existingUser = await _userRepository.GetByUserNameAsync(request.UserName);
+            var existingUser =
+                await _userRepository.GetByUserNameAsync(request.UserName);
 
-            if (existingUser is null)
+            if (existingUser == null)
             {
-                return new AuthResponseDTO
-                {
-                    Success = false,
-                    Message = "User not registered"
-                };
+                return ApiResponse<AuthResponseDTO>.NotFound(
+                    "User not registered"
+                );
             }
 
-            var result = _passwordHasher.VerifyHashedPassword(
-                existingUser,
-                existingUser.PasswordHash,
-                request.Password
-            );
+            var passwordResult =
+                _passwordHasher.VerifyHashedPassword(
+                    existingUser,
+                    existingUser.PasswordHash,
+                    request.Password
+                );
 
-            if (result != PasswordVerificationResult.Success)
+            if (passwordResult != PasswordVerificationResult.Success)
             {
-                return new AuthResponseDTO
-                {
-                    Success = false,
-                    Message = "Incorrect password"
-                };
+                return ApiResponse<AuthResponseDTO>.BadRequest(
+                    "Incorrect password"
+                );
             }
 
-            var permRole = await _roleRepository.GetRoleById(existingUser.RoleNumber);
+            var permRole =
+                await _roleRepository.GetRoleById(existingUser.RoleNumber);
 
-            if (permRole?.PermRole1 is null)
+            if (permRole?.PermRole1 == null)
             {
-                return new AuthResponseDTO
-                {
-                    Success = false,
-                    Message = "Role not assigned"
-                };
+                return ApiResponse<AuthResponseDTO>.BadRequest(
+                    "Role not assigned"
+                );
             }
 
-            var token = await _jwtService.GenerateToken(existingUser, permRole.PermRole1);
+            var token =
+                await _jwtService.GenerateToken(existingUser, permRole.PermRole1);
 
-            return new AuthResponseDTO
+            var authResponse = new AuthResponseDTO
             {
                 Success = true,
                 Message = "Login successful",
                 Token = token
             };
+
+            return ApiResponse<AuthResponseDTO>.SuccessResponse(
+                authResponse,
+                "Login successful"
+            );
         }
 
-        public async Task<RegisterUserDTO?> RegisterAsync(RegisterUserDTO request) {
-            if(request is null) {
-                throw new BadRequestException($"Incomplete User Details :: Provide complete request body");
-            } 
-
-            var existing_user = await _userRepository.GetByUserNameAsync(request.UserName);
-
-            if(existing_user is not null)
+        public async Task<ApiResponse<UserEntity>> UpdateUserAsync(UpdateUserDTO request)
+        {
+            if (request == null)
             {
-                throw new BadRequestException($"User Already Exists With Username : {request.UserName}");
+                return ApiResponse<UserEntity>.BadRequest(
+                    "User details are required"
+                );
             }
 
-            // Register the user
-            var user = _mapper.Map<UserEntity>(request);
+            var existingUser =
+                await _userRepository.GetByUserId(request.UserId);
 
-            user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
-            user.Password = request.Password;   
+            if (existingUser == null)
+            {
+                return ApiResponse<UserEntity>.NotFound(
+                    $"User with id {request.UserId} not found"
+                );
+            }
 
-            await _userRepository.CreateUserAsync(user);
-            
-            return request;
-        }   
+            _mapper.Map(request, existingUser);
+
+            await _userRepository.UpdateUser(existingUser);
+
+            return ApiResponse<UserEntity>.SuccessResponse(
+                existingUser,
+                "User updated successfully"
+            );
+        }
     }
 }
