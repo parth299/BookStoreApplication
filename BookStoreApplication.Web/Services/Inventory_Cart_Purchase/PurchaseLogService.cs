@@ -1,8 +1,8 @@
 using BookStoreApplication.Web.DTOs.Inventory;
 using BookStoreApplication.Web.Exceptions;
 using BookStoreApplication.Web.Models;
-using BookStoreApplication.Web.Repositories.CartPurchaseInventory;
-using BookStoreApplication.Web.Repositories.Implementations;
+using BookStoreApplication.Web.Repositories.Inventory_Cart_Purchase;
+
 
 namespace BookStoreApplication.Web.Services.Inventory_Cart_Purchase
 {

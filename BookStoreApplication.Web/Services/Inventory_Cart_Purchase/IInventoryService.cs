@@ -1,6 +1,6 @@
 using BookStoreApplication.Web.DTOs.Inventory;
 
-namespace BookStoreApplication.Web.Services.Inventory
+namespace BookStoreApplication.Web.Services.Inventory_Cart_Purchase
 {
     public interface IInventoryService
     {

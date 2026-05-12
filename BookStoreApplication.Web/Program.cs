@@ -7,19 +7,19 @@ using BookStoreApplication.Web.DTOs.User;
 using BookStoreApplication.Web.Filters;
 using BookStoreApplication.Web.Mapping;
 using BookStoreApplication.Web.Middleware;
-using BookStoreApplication.Web.Models;
-using BookStoreApplication.Web.Repositories;
 using BookStoreApplication.Web.Repositories.Author;
 using BookStoreApplication.Web.Repositories.Category;
-using BookStoreApplication.Web.Repositories.Implementations;
+//using BookStoreApplication.Web.Repositories.Inventory_Cart_Purchase.;
+using BookStoreApplication.Web.Repositories.Inventory_Cart_Purchase;
+
 using BookStoreApplication.Web.Repositories.ReviewAndRatings;
 using BookStoreApplication.Web.Repositories.User;
-using BookStoreApplication.Web.Services;
-using BookStoreApplication.Web.Services.Author;
+using BookStoreApplication.Web.Services.Author_Category;
 using BookStoreApplication.Web.Services.Auth;
-using BookStoreApplication.Web.Services.Inventory;
-using BookStoreApplication.Web.Services.ReviewsAndRatings;
-using BookStoreApplication.Web.services;
+using BookStoreApplication.Web.Services.Inventory_Cart_Purchase;
+//using BookStoreApplication.Web.Services.Inventory_Cart_Purchase.Interfaces;
+
+using BookStoreApplication.Web.Services.Reviews_Ratings;
 using BookStoreApplication.Web.Validators.Author;
 using BookStoreApplication.Web.Validators.Category;
 using BookStoreApplication.Web.Validators.Inventory;
@@ -35,10 +35,9 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text;
 using UserEntity = BookStoreApplication.Web.Models.User;
-using BookStoreApplication.Web.Repositories.CartPurchaseInventory;
-using BookStoreApplication.Web.Services.Author_Category;
-using BookStoreApplication.Web.Services.Inventory_Cart_Purchase;
+using BookStoreApplication.Web.Repositories.Book_Publisher;
 using BookStoreApplication.Web.Services.Book_Publisher;
+using BookStoreApplication.Web.Services.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -94,7 +93,6 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IPublisherRepository,
     PublisherRepository>();
-
 builder.Services.AddScoped<
     IBookService,
     BookService>();

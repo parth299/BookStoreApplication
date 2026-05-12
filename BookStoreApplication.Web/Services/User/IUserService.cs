@@ -3,7 +3,7 @@ using BookStoreApplication.Web.DTOs.User;
 using BookStoreApplication.Web.Models;
 using UserEntity = BookStoreApplication.Web.Models.User;
 
-namespace BookStoreApplication.Web.services
+namespace BookStoreApplication.Web.Services.User
 {
     public interface IUserService
     {

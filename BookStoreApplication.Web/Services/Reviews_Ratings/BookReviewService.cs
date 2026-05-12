@@ -4,7 +4,7 @@ using BookStoreApplication.Web.Repositories.ReviewAndRatings;
 using FluentValidation;
 using BookStoreApplication.Web.Exceptions.RatingsAndReviewers;
 
-namespace BookStoreApplication.Web.Services.ReviewsAndRatings
+namespace BookStoreApplication.Web.Services.Reviews_Ratings
 {
     public class BookReviewService : IBookReviewService
     {

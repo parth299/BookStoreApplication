@@ -1,7 +1,7 @@
 using BookStoreApplication.Web.DTOs.Author;
 using BookStoreApplication.Web.Models;
 
-namespace BookStoreApplication.Web.Services.Author
+namespace BookStoreApplication.Web.Services.Author_Category
 {
     public interface IAuthorService
     {

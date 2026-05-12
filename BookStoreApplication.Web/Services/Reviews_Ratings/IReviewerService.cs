@@ -1,6 +1,6 @@
 using BookStoreApplication.Web.DTOs.ReviewsAndRatings;
 
-namespace BookStoreApplication.Web.Services.ReviewsAndRatings
+namespace BookStoreApplication.Web.Services.Reviews_Ratings
 {
     public interface IReviewerService
     {

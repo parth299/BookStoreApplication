@@ -7,7 +7,7 @@ using BookStoreApplication.Web.Exceptions;
 using BookStoreApplication.Web.DTOs.Author;
 using BookStoreApplication.Web.Repositories.Author;
 
-namespace BookStoreApplication.Web.Services.Author
+namespace BookStoreApplication.Web.Services.Author_Category
 {
     public class AuthorService : IAuthorService
     {

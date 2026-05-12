@@ -1,7 +1,7 @@
 ﻿using BookStoreApplication.Web.DTOs.Inventory;
 using BookStoreApplication.Web.Exceptions;
 using BookStoreApplication.Web.Models;
-using BookStoreApplication.Web.Repositories.CartPurchaseInventory;
+using BookStoreApplication.Web.Repositories.Inventory_Cart_Purchase;
 using BookStoreApplication.Web.Services.Inventory_Cart_Purchase;
 using FluentAssertions;
 using Moq;

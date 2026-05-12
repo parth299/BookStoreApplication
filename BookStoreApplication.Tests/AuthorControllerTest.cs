@@ -1,20 +1,9 @@
-using Xunit;
 using Moq;
 using Microsoft.AspNetCore.Mvc;
-<<<<<<< HEAD
-using BookStoreApplication.Web.Controllers;
-using BookStoreApplication.Web.Services;
-using BookStoreApplication.Web.DTOs;
-=======
-using Microsoft.EntityFrameworkCore;
-using BookStoreApplication.Web.Models;
-using BookStoreApplication.Web.Exceptions;
->>>>>>> main
 using BookStoreApplication.Web.Wrappers;
-using BookStoreApplication.Web.Controllers.Auth;
 using BookStoreApplication.Web.DTOs.Author;
-using BookStoreApplication.Web.Services.Author;
 using BookStoreApplication.Web.Services.Author_Category;
+using BookStoreApplication.Web.Controllers.Author_Category;
 
 namespace BookStoreApplication.Tests.Controllers
 {

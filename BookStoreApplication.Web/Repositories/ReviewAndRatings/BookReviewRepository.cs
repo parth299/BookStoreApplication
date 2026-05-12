@@ -136,8 +136,6 @@ namespace BookStoreApplication.Web.Repositories.ReviewAndRatings
                 return null;
             }
 
-
-
             if (request.Comments != null)
             {
                 review.Comments = request.Comments;

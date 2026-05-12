@@ -80,5 +80,16 @@ namespace BookStoreApplication.Web.Wrappers
         {
             return FailResponse(message, 400, errors, traceId);
         }
+        public static ApiResponse<T> MessageResponse(
+    string message,
+    int statusCode = 200)
+        {
+            return new ApiResponse<T>
+            {
+                Success = true,
+                StatusCode = statusCode,
+                Message = message
+            };
+        }
     }
 }

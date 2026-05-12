@@ -3,7 +3,6 @@ using CategoryEntity = BookStoreApplication.Web.Models.Category;
 using UserEntity = BookStoreApplication.Web.Models.User;
 using System;
 using System.Collections.Generic;
-using BookStoreApplication.Web;
 using BookStoreApplication.Web.Models;
 using Microsoft.EntityFrameworkCore;
 

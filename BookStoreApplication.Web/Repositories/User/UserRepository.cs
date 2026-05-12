@@ -1,7 +1,6 @@
 using BookStoreApplication.Web.Models;
 using BookStoreApplication.Web.Data;
 using Microsoft.EntityFrameworkCore;
-using BookStoreApplication.Web.DTOs;
 using UserEntity = BookStoreApplication.Web.Models.User;
 
 namespace BookStoreApplication.Web.Repositories.User 

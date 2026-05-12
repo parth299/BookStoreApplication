@@ -1,4 +1,4 @@
-using BookStoreApplication.Web.DTOs;
+using BookStoreApplication.Web.DTOs.Book_Publisher;
 
 namespace BookStoreApplication.Web.Services.Book_Publisher;
 
