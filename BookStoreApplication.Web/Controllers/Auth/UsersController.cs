@@ -1,5 +1,5 @@
 using BookStoreApplication.Web.DTOs.User;
-using BookStoreApplication.Web.services;
+using BookStoreApplication.Web.Services.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

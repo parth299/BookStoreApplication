@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using BookStoreApplication.Web.Validators;
+using BookStoreApplication.Web.Validators.Author;
 
 namespace BookStoreApplication.Web.DTOs.Category
 {
