@@ -3,6 +3,7 @@ using BookStoreApplication.Web.Models;
 using AutoMapper;
 using BookStoreApplication.Web.DTOs.Book_Publisher;
 using BookStoreApplication.Web.Repositories.Book_Publisher;
+using System.Text.RegularExpressions; 
 
 namespace BookStoreApplication.Web.Services.Book_Publisher;
 
@@ -156,9 +157,9 @@ public class BookService : IBookService
         }
 
         var trimmedIsbn = isbn.Trim();
-        if (trimmedIsbn.Length is < 10 or > 13)
+        if (!Regex.IsMatch(trimmedIsbn, @"^[0-9]{1}-[0-9]{3}-[0-9]{5}-[0-9]{1}$"))
         {
-            throw new BadRequestException("ISBN must be between 10 and 13 characters.");
+            throw new BadRequestException("ISBN format must be like 1-111-11111-1");
         }
 
         return trimmedIsbn;

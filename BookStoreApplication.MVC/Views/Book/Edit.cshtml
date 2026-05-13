@@ -1,0 +1,64 @@
+@model BookFormViewModel
+@{
+    ViewData["Title"] = "Edit Book";
+}
+
+<section class="catalog-heading">
+    <div>
+        <p class="catalog-kicker">StoreOwner / Admin</p>
+        <h1>Edit Book</h1>
+    </div>
+    <a class="catalog-button catalog-button--ghost" asp-action="Detail" asp-route-isbn="@Model.Isbn">Back</a>
+</section>
+
+<form asp-action="Edit" asp-route-isbn="@Model.Isbn" method="post" class="catalog-form">
+    <div asp-validation-summary="ModelOnly" class="validation-message"></div>
+    <input asp-for="Isbn" type="hidden" />
+    <div class="form-grid">
+        <div class="field-group">
+            <label asp-for="Title" class="form-label"></label>
+            <input asp-for="Title" class="form-input" />
+            <span asp-validation-for="Title" class="validation-message"></span>
+        </div>
+        <div class="field-group">
+            <label asp-for="PublisherId" class="form-label">Publisher</label>
+            <select asp-for="PublisherId" class="form-input">
+                <option value="">Select publisher</option>
+                @foreach (var publisher in Model.Publishers)
+                {
+                    <option value="@publisher.PublisherId">@publisher.Name</option>
+                }
+            </select>
+            <span asp-validation-for="PublisherId" class="validation-message"></span>
+        </div>
+        <div class="field-group field-group--wide">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-input" rows="3"></textarea>
+            <span asp-validation-for="Description" class="validation-message"></span>
+        </div>
+        <div class="field-group">
+            <label asp-for="Category" class="form-label"></label>
+            <select asp-for="Category" class="form-input">
+                <option value="">Select category</option>
+                @foreach (var category in Model.Categories)
+                {
+                    <option value="@category.CatId">@category.CatDescription</option>
+                }
+            </select>
+            <span asp-validation-for="Category" class="validation-message"></span>
+        </div>
+        <div class="field-group">
+            <label asp-for="Edition" class="form-label"></label>
+            <input asp-for="Edition" class="form-input" />
+            <span asp-validation-for="Edition" class="validation-message"></span>
+        </div>
+    </div>
+    <div class="catalog-actions catalog-actions--spaced">
+        <button class="catalog-button catalog-button--primary" type="submit">Save Book</button>
+        <a class="catalog-button catalog-button--ghost" asp-action="Detail" asp-route-isbn="@Model.Isbn">Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
