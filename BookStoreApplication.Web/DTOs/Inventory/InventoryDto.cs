@@ -10,4 +10,12 @@ namespace BookStoreApplication.Web.DTOs.Inventory
 
         public byte? Purchased { get; set; }
     }
+    public class CreateInventoryDto
+    {
+        public string ISBN { get; set; } = null!;
+
+        public int ConditionRank { get; set; }
+
+        public byte? Purchased { get; set; }
+    }
 }
