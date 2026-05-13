@@ -8,7 +8,7 @@ namespace BookStoreApplication.Web.Controllers.Books_Publisher;
 
 [ApiController]
 [Route("publishers")]
-[Authorize(Roles = "Guest,RegisteredUser,StoreOwner,Admin")]
+//[Authorize(Roles = "Guest,RegisteredUser,StoreOwner,Admin")]
 public class PublishersController : ControllerBase
 {
     private readonly IPublisherService _publisherService;

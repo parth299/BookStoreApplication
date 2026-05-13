@@ -4,14 +4,34 @@
 
 <div class="py-5 animate-fade-in">
     <div class="glass-card text-center py-5">
-        <h1 class="display-4 fw-bold mb-3">Welcome to BookStore</h1>
-        <p class="lead text-muted mb-4">Discover your next favorite book in our curated collection.</p>
+
+        <h1 class="display-4 fw-bold mb-3">
+            BookStore Catalog
+        </h1>
+
+        <p class="lead text-muted mb-4">
+            Browse books and publishers from the catalog API.
+            Discover your next favorite book in our curated collection.
+        </p>
+
         <div class="d-flex justify-content-center gap-3">
-            <a href="#" class="btn btn-primary px-4 py-2">Browse Books</a>
+
+            <a asp-controller="Book"
+               asp-action="Index"
+               class="btn btn-primary px-4 py-2">
+                Browse Books
+            </a>
+
             @if (User.Identity?.IsAuthenticated != true)
             {
-                <a asp-controller="Account" asp-action="Register" class="btn btn-outline-primary px-4 py-2">Join Now</a>
+                <a asp-controller="Account"
+                   asp-action="Register"
+                   class="btn btn-outline-primary px-4 py-2">
+                    Join Now
+                </a>
             }
+
         </div>
+
     </div>
 </div>
