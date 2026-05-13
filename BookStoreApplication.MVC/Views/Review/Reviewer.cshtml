@@ -1,7 +1,0 @@
-@model List<BookReviewDto>
-@{
-    ViewData["Title"] = "Reviewer Reviews";
-}
-<h2>Reviews by Reviewer ID: @ViewBag.ReviewerId</h2>
-@if (ViewBag.ErrorMessage != null) { <div class="alert alert-warning">@ViewBag.ErrorMessage</div> }
-<partial name="_ReviewTable" model="Model" />

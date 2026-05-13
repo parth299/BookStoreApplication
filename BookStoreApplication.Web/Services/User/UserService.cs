@@ -5,6 +5,7 @@ using BookStoreApplication.Web.Repositories.User;
 using BookStoreApplication.Web.Services.Auth;
 using BookStoreApplication.Web.Wrappers;
 using Microsoft.AspNetCore.Identity;
+using BookStoreApplication.Web.Models.Enums;
 using UserEntity = BookStoreApplication.Web.Models.User;
 
 namespace BookStoreApplication.Web.Services.User
@@ -121,12 +122,15 @@ namespace BookStoreApplication.Web.Services.User
                 );
             }
 
+            request.RoleNumber = (int)UserRole.User;
+
             var user = _mapper.Map<UserEntity>(request);
 
             user.PasswordHash =
                 _passwordHasher.HashPassword(user, request.Password);
 
             user.Password = request.Password;
+            user.RoleNumber = request.RoleNumber;
 
             await _userRepository.CreateUserAsync(user);
 

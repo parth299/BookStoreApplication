@@ -8,7 +8,7 @@ namespace BookStoreApplication.Web.Controllers.Books_Publisher;
 
 [ApiController]
 [Route("books")]
-[Authorize(Roles = "Guest,RegisteredUser,StoreOwner,Admin")]
+[Authorize(Roles = "User,RegisteredUser,Manager,StoreOwner,Admin")]
 public class BooksController : ControllerBase
 {
     private readonly IBookService _bookService;
@@ -18,7 +18,7 @@ public class BooksController : ControllerBase
         _bookService = bookService;
     }
 
-    [Authorize(Roles = "StoreOwner,Admin")]
+    [Authorize(Roles = "Manager,StoreOwner,Admin")]
     [HttpPost]
     public async Task<ActionResult<ApiResponse<BookResponseDto>>> Create(BookCreateDto dto)
     {
@@ -59,7 +59,7 @@ public class BooksController : ControllerBase
                 StatusCodes.Status200OK));
     }
 
-    [Authorize(Roles = "StoreOwner,Admin")]
+    [Authorize(Roles = "Manager,StoreOwner,Admin")]
     [HttpPut("{isbn}")]
     public async Task<ActionResult<ApiResponse<BookResponseDto>>> Update(string isbn, BookUpdateDto dto)
     {

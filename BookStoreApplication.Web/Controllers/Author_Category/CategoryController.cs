@@ -9,7 +9,7 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Guest,RegisteredUser,StoreOwner,Admin")]
+    [Authorize(Roles = "User,RegisteredUser,Manager,StoreOwner,Admin")]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _service;
@@ -19,7 +19,7 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
             _service = service;
         }
 
-        [Authorize(Roles = "StoreOwner,Admin")]
+        [Authorize(Roles = "Manager,StoreOwner,Admin")]
         [HttpPost]
         public async Task<ActionResult<ApiResponse<CategoryResponseDto>>> Create(
             CategoryRequestDto dto)
@@ -65,7 +65,7 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
             return StatusCode(response.StatusCode, response);
         }
 
-        [Authorize(Roles = "StoreOwner,Admin")]
+        [Authorize(Roles = "Manager,StoreOwner,Admin")]
         [HttpPut("{id:int:min(1)}")]
         public async Task<ActionResult<ApiResponse<CategoryResponseDto>>> Update(
             int id,
@@ -100,7 +100,7 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
             return StatusCode(response.StatusCode, response);
         }
 
-        [Authorize(Roles = "StoreOwner,Admin")]
+        [Authorize(Roles = "Manager,StoreOwner,Admin")]
         [HttpDelete("{id:int:min(1)}")]
         public async Task<ActionResult<ApiResponse<bool>>> Delete(
             int id)

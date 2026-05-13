@@ -1,31 +1,42 @@
-@using System.Security.Claims
-
-<ul class="navbar-nav">
+<ul class="navbar-nav flex-row align-items-center gap-2">
 @if (User.Identity?.IsAuthenticated == true)
 {
+    var isAdmin = User.IsInRole("Admin");
+    var isManager = (User.IsInRole("Manager") || User.IsInRole("StoreOwner")) || User.IsInRole("StoreOwner");
     <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://ui-avatars.com/api/?name=@User.Identity.Name&background=6366f1&color=fff&size=24" class="rounded-circle me-2" alt="" />
-            <span>Hello, @User.Identity.Name!</span>
+        <a class="user-pill dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="avatar">@((User.Identity.Name ?? "U").Substring(0,1).ToUpper())</span>
+            <span class="d-none d-sm-inline">@User.Identity.Name</span>
+            @if (isAdmin) { <span class="role-chip admin">Admin</span> }
+            else if (isManager) { <span class="role-chip manager">Manager</span> }
+            else { <span class="role-chip user">User</span> }
         </a>
-        <ul class="dropdown-menu dropdown-menu-end glass-card border-0 shadow-lg mt-2" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item py-2" asp-controller="Account" asp-action="Profile" asp-route-id="@User.FindFirst("UserId")?.Value"><i class="bi bi-person me-2"></i>My Profile</a></li>
-            @if (User.IsInRole("Admin"))
+        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 p-2">
+            @if (isAdmin)
             {
-                <li><a class="dropdown-item py-2" asp-controller="UserAdmin" asp-action="Index"><i class="bi bi-shield-lock me-2"></i>Admin Panel</a></li>
+                <li><a class="dropdown-item rounded-3" asp-controller="UserAdmin" asp-action="Index">Users & Roles</a></li>
             }
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item py-2 text-danger" asp-controller="Account" asp-action="Logout"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+            @if (isAdmin || isManager)
+            {
+                <li><a class="dropdown-item rounded-3" asp-controller="Inventory" asp-action="Index">Inventory</a></li>
+            }
+            @if (!isAdmin && !isManager)
+            {
+                <li><a class="dropdown-item rounded-3" asp-controller="Cart" asp-action="Index">My cart</a></li>
+            }
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    @Html.AntiForgeryToken()
+                    <button class="dropdown-item rounded-3 text-danger" type="submit">Logout</button>
+                </form>
+            </li>
         </ul>
     </li>
 }
 else
 {
-    <li class="nav-item">
-        <a class="nav-link px-3" asp-controller="Account" asp-action="Login">Login</a>
-    </li>
-    <li class="nav-item">
-        <a class="btn btn-primary btn-sm ms-lg-2 px-3 rounded-pill" asp-controller="Account" asp-action="Register">Register</a>
-    </li>
+    <li class="nav-item"><a class="btn btn-soft" asp-controller="Account" asp-action="Login">Login</a></li>
+    <li class="nav-item"><a class="btn btn-primary rounded-pill px-4" asp-controller="Account" asp-action="Register">Register</a></li>
 }
 </ul>

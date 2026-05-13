@@ -7,7 +7,7 @@ namespace BookStoreApplication.Web.Controllers.Reviewers_Reviews
 {
     [Route("api/reviewers")]
     [ApiController]
-    [Authorize(Roles = "Guest,RegisteredUser,StoreOwner,Admin")]
+    [Authorize(Roles = "User,RegisteredUser,Manager,StoreOwner,Admin")]
     public class ReviewerController : ControllerBase
     {
         private readonly IReviewerService _reviewerService;
@@ -17,7 +17,7 @@ namespace BookStoreApplication.Web.Controllers.Reviewers_Reviews
             _reviewerService = reviewerService;
         }
 
-        [Authorize(Roles = "StoreOwner,Admin")]
+        [Authorize(Roles = "Manager,StoreOwner,Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateReviewerAsync([FromBody] CreateReviewerRequestDto request)
         {

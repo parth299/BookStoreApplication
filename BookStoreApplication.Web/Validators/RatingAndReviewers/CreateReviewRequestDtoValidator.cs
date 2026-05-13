@@ -13,8 +13,8 @@ namespace BookStoreApplication.Web.Validators.RatingAndReviewers
                 .WithMessage("ISBN must be exactly 13 characters.");
 
             RuleFor(x => x.ReviewerId)
-                .GreaterThan(0)
-                .WithMessage("ReviewerId must be a positive number.");
+                .GreaterThanOrEqualTo(0)
+                .WithMessage("ReviewerId cannot be negative. Guests may submit with 0 so the system can create a reviewer profile.");
 
             RuleFor(x => x.Name)
                 .NotEmpty()

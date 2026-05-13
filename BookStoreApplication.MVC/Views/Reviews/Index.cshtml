@@ -1,36 +1,60 @@
-@model object
+@model IEnumerable<BookStoreApplication.MVC.DTOs.ReviewsAndRatings.BookReviewDto>
 @{
     ViewData["Title"] = "Reviews";
+    var items = Model?.ToList() ?? new List<BookStoreApplication.MVC.DTOs.ReviewsAndRatings.BookReviewDto>();
+    var isLoggedIn = User.Identity?.IsAuthenticated == true;
 }
-
-<h1>Reviews</h1>
-
-<div class="d-flex gap-2 mb-3 flex-wrap">
-    <a class="btn btn-primary" asp-action="Create">Create Review</a>
-    <a class="btn btn-outline-secondary" asp-controller="ReviewersMvc" asp-action="Index">Reviewers</a>
-    <a class="btn btn-outline-secondary" asp-controller="BookRatings" asp-action="Index">Average Rating</a>
-</div>
-
-<div class="row g-3 mb-4">
-    <div class="col-md-6">
-        <form asp-action="SearchBook" method="post" class="input-group">
-            @Html.AntiForgeryToken()
-            <input name="isbn" class="form-control" placeholder="Search reviews by ISBN" />
-            <button class="btn btn-outline-primary" type="submit">Search Book</button>
-        </form>
+<section class="page-hero hero-gold">
+    <div class="position-relative d-flex justify-content-between align-items-end flex-wrap gap-3">
+        <div>
+            <span class="badge rounded-pill bg-gold-soft text-dark px-3 py-2 mb-3">Community Voice</span>
+            <h1>Reader reviews.</h1>
+            <p>Everyone can read reviews. Only guest visitors can post a review by entering their reviewer details.</p>
+        </div>
+        @if (!isLoggedIn)
+        {
+            <a asp-action="Create" class="btn btn-light rounded-pill px-4">Write Guest Review</a>
+        }
+        else
+        {
+            <span class="badge status-info">Review posting hidden for logged-in portal users</span>
+        }
     </div>
-    <div class="col-md-6">
-        <form asp-action="SearchReviewer" method="post" class="input-group">
-            @Html.AntiForgeryToken()
-            <input name="reviewerId" type="number" class="form-control" placeholder="Search reviews by Reviewer Id" />
-            <button class="btn btn-outline-primary" type="submit">Search Reviewer</button>
-        </form>
+</section>
+
+@if (!items.Any())
+{
+    <div class="pro-card empty-state">
+        <h3>No reviews yet</h3>
+        <p>Start the API or submit the first guest review.</p>
+        @if (!isLoggedIn)
+        {
+            <a asp-action="Create" class="btn btn-primary">Write Review</a>
+        }
     </div>
-</div>
-
-@await Html.PartialAsync("_ObjectTable", Model)
-
-<nav class="mt-3">
-    <a class="btn btn-sm btn-outline-secondary" asp-action="Index" asp-route-page="@Math.Max(1, (int)(ViewBag.Page ?? 1) - 1)" asp-route-pageSize="@(ViewBag.PageSize ?? 10)">Previous</a>
-    <a class="btn btn-sm btn-outline-secondary" asp-action="Index" asp-route-page="@((int)(ViewBag.Page ?? 1) + 1)" asp-route-pageSize="@(ViewBag.PageSize ?? 10)">Next</a>
-</nav>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var r in items)
+        {
+            var rating = Math.Clamp(r.Rating ?? 1, 1, 5);
+            <div class="col-lg-6">
+                <article class="pro-card review-card h-100">
+                    <div class="d-flex justify-content-between gap-3">
+                        <div>
+                            <h4 class="fw-bold mb-1">@r.ReviewerName</h4>
+                            <small class="text-muted">@(string.IsNullOrWhiteSpace(r.EmployedBy) ? "Independent reader" : r.EmployedBy)</small>
+                        </div>
+                        <div class="rating-stars">@(new string('★', rating))</div>
+                    </div>
+                    <p class="mt-3 text-muted">@(r.Comments ?? "No comment added.")</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge badge-soft">ISBN @r.Isbn</span>
+                        <a asp-controller="Books" asp-action="Details" asp-route-id="@r.Isbn" class="btn btn-soft btn-sm">Open book</a>
+                    </div>
+                </article>
+            </div>
+        }
+    </div>
+}

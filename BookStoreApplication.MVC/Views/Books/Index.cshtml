@@ -1,0 +1,59 @@
+@model IEnumerable<BookStoreApplication.MVC.DTOs.Book_Publisher.BookResponseDto>
+@{
+    ViewData["Title"] = "Books";
+    var books = Model?.ToList() ?? new List<BookStoreApplication.MVC.DTOs.Book_Publisher.BookResponseDto>();
+    var canManage = User.IsInRole("Admin") || (User.IsInRole("Manager") || User.IsInRole("StoreOwner"));
+}
+<section class="page-hero">
+    <div class="position-relative d-flex flex-wrap justify-content-between align-items-end gap-3">
+        <div>
+            <span class="badge rounded-pill text-bg-light text-primary px-3 py-2 mb-3">Book catalogue</span>
+            <h1>Discover and manage books.</h1>
+            <p>Professional card-based listing with dropdown filters powered by your API data.</p>
+        </div>
+        <div class="hero-actions">
+            <a asp-action="TopRated" class="btn btn-outline-light rounded-pill px-4">Top Rated</a>
+            @if (canManage) { <a asp-action="Create" class="btn btn-light rounded-pill px-4">Add Book</a> }
+        </div>
+    </div>
+</section>
+
+<div class="pro-card mb-4">
+    <form method="get" class="row g-3 align-items-end">
+        <div class="col-lg-4"><label class="form-label">Search title</label><input name="title" class="form-control" placeholder="Atomic Habits, Clean Code..." /></div>
+        <div class="col-lg-3"><label class="form-label">Category</label><select name="category" class="form-select" asp-items="ViewBag.Categories"><option value="">All categories</option></select></div>
+        <div class="col-lg-3"><label class="form-label">Publisher</label><select name="publisherId" class="form-select" asp-items="ViewBag.Publishers"><option value="">All publishers</option></select></div>
+        <div class="col-lg-2 d-grid"><button class="btn btn-primary">Apply Filter</button></div>
+    </form>
+</div>
+
+@if (!books.Any())
+{
+    <div class="pro-card empty-state"><h3>No books found</h3><p>Start the Web API first or add a new book.</p>@if (canManage) { <a asp-action="Create" class="btn btn-primary">Add Book</a> }</div>
+}
+else
+{
+    <div class="book-grid">
+    @foreach (var b in books)
+    {
+        <article class="pro-card book-card">
+            <div class="book-cover">
+                <span class="badge text-bg-light text-primary align-self-start mb-auto">@(b.Edition ?? "Standard")</span>
+                <h3>@b.Title</h3>
+                <small>ISBN @b.Isbn</small>
+            </div>
+            <div class="book-meta">
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <span class="badge badge-soft">Category @b.Category</span>
+                    <span class="badge text-bg-light">@(b.PublisherName ?? "Publisher")</span>
+                </div>
+                <p class="text-muted small">@((b.Description?.Length ?? 0) > 120 ? b.Description!.Substring(0, 120) + "..." : b.Description ?? "No description added yet.")</p>
+                <div class="d-flex gap-2">
+                    <a asp-action="Details" asp-route-id="@b.Isbn" class="btn btn-primary btn-sm flex-fill">Details</a>
+                    @if (canManage) { <a asp-action="Edit" asp-route-id="@b.Isbn" class="btn btn-soft btn-sm">Edit</a> }
+                </div>
+            </div>
+        </article>
+    }
+    </div>
+}
