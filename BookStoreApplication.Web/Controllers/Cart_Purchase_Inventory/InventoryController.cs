@@ -26,7 +26,7 @@ namespace BookStoreApplication.Web.Controllers.Cart_Purchase_Inventory
         [HttpPost]
         //[Authorize(Roles = "Admin")]
         public async Task<IActionResult>
-            Create(InventoryDto dto)
+            Create(CreateInventoryDto dto)
         {
             var id =
                 await _service.CreateAsync(dto);
