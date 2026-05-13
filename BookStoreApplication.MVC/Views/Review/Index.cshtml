@@ -1,0 +1,63 @@
+@model List<BookReviewDto>
+@{
+    ViewData["Title"] = "Reviews";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Reviews</h2>
+    <a class="btn btn-primary" asp-action="Create">Create Review</a>
+</div>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-warning">@ViewBag.ErrorMessage</div>
+}
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="get" class="row g-2">
+            <div class="col-md-2">
+                <input class="form-control" name="page" value="@(ViewBag.Page ?? 1)" placeholder="Page" />
+            </div>
+            <div class="col-md-2">
+                <input class="form-control" name="pageSize" value="@(ViewBag.PageSize ?? 10)" placeholder="Page size" />
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-outline-primary w-100" type="submit">Load</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<table class="table table-striped table-bordered bg-white">
+    <thead>
+        <tr>
+            <th>ISBN</th>
+            <th>Reviewer ID</th>
+            <th>Reviewer</th>
+            <th>Employed By</th>
+            <th>Rating</th>
+            <th>Comments</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Isbn</td>
+            <td>@item.ReviewerId</td>
+            <td>@item.ReviewerName</td>
+            <td>@item.EmployedBy</td>
+            <td>@item.Rating</td>
+            <td>@item.Comments</td>
+            <td class="text-nowrap">
+                <a asp-action="Book" asp-route-isbn="@item.Isbn">Book Reviews</a> |
+                <a asp-action="Reviewer" asp-route-reviewerId="@item.ReviewerId">Reviewer Reviews</a> |
+                <a asp-action="AverageRating" asp-route-isbn="@item.Isbn">Avg Rating</a> |
+                <a asp-action="Edit" asp-route-isbn="@item.Isbn" asp-route-reviewerId="@item.ReviewerId" asp-route-rating="@item.Rating" asp-route-comments="@item.Comments">Edit</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -1,27 +1,44 @@
+using BookStoreApplication.MVC.Data;
+using BookStoreApplication.MVC.DTOs.ReviewsAndRatings;
+using BookStoreApplication.MVC.Repositories.ReviewAndRatings;
+using BookStoreApplication.MVC.Services.Reviews_Ratings;
+using BookStoreApplication.MVC.Validators.RatingAndReviewers;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("BookDB")));
+
+builder.Services.AddScoped<IBookReviewRepository, BookReviewRepository>();
+builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
+builder.Services.AddScoped<IBookReviewService, BookReviewService>();
+builder.Services.AddScoped<IReviewerService, ReviewerService>();
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddScoped<IValidator<CreateReviewRequestDto>, CreateReviewRequestDtoValidator>();
+builder.Services.AddScoped<IValidator<CreateReviewerRequestDto>, CreateReviewerRequestDtoValidator>();
+builder.Services.AddScoped<IValidator<UpdateReviewRequestDto>, UpdateReviewRequestDtoValidator>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Review}/{action=Index}/{id?}");
 
 app.Run();

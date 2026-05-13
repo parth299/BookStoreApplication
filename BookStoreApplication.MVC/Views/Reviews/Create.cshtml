@@ -1,0 +1,42 @@
+@model BookStoreApplication.MVC.DTOs.ReviewsAndRatings.CreateReviewRequestDto
+@{
+    ViewData["Title"] = "Create Review";
+}
+
+<h1>Create Review</h1>
+
+<form asp-action="Create" method="post" class="col-lg-6">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Isbn" class="form-label"></label>
+        <input asp-for="Isbn" class="form-control" />
+        <span asp-validation-for="Isbn" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ReviewerId" class="form-label"></label>
+        <input asp-for="ReviewerId" class="form-control" />
+        <span asp-validation-for="ReviewerId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Rating" class="form-label"></label>
+        <input asp-for="Rating" class="form-control" min="1" max="5" />
+        <span asp-validation-for="Rating" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Comments" class="form-label"></label>
+        <textarea asp-for="Comments" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Comments" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

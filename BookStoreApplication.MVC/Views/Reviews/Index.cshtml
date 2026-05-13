@@ -1,0 +1,36 @@
+@model object
+@{
+    ViewData["Title"] = "Reviews";
+}
+
+<h1>Reviews</h1>
+
+<div class="d-flex gap-2 mb-3 flex-wrap">
+    <a class="btn btn-primary" asp-action="Create">Create Review</a>
+    <a class="btn btn-outline-secondary" asp-controller="ReviewersMvc" asp-action="Index">Reviewers</a>
+    <a class="btn btn-outline-secondary" asp-controller="BookRatings" asp-action="Index">Average Rating</a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <form asp-action="SearchBook" method="post" class="input-group">
+            @Html.AntiForgeryToken()
+            <input name="isbn" class="form-control" placeholder="Search reviews by ISBN" />
+            <button class="btn btn-outline-primary" type="submit">Search Book</button>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <form asp-action="SearchReviewer" method="post" class="input-group">
+            @Html.AntiForgeryToken()
+            <input name="reviewerId" type="number" class="form-control" placeholder="Search reviews by Reviewer Id" />
+            <button class="btn btn-outline-primary" type="submit">Search Reviewer</button>
+        </form>
+    </div>
+</div>
+
+@await Html.PartialAsync("_ObjectTable", Model)
+
+<nav class="mt-3">
+    <a class="btn btn-sm btn-outline-secondary" asp-action="Index" asp-route-page="@Math.Max(1, (int)(ViewBag.Page ?? 1) - 1)" asp-route-pageSize="@(ViewBag.PageSize ?? 10)">Previous</a>
+    <a class="btn btn-sm btn-outline-secondary" asp-action="Index" asp-route-page="@((int)(ViewBag.Page ?? 1) + 1)" asp-route-pageSize="@(ViewBag.PageSize ?? 10)">Next</a>
+</nav>

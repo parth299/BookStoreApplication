@@ -1,0 +1,13 @@
+@model object
+@{
+    ViewData["Title"] = "Reviewer Reviews";
+}
+
+<h1>Reviews by Reviewer @ViewBag.ReviewerId</h1>
+
+<div class="mb-3">
+    <a class="btn btn-outline-secondary" asp-action="Index">All Reviews</a>
+    <a class="btn btn-outline-secondary" asp-controller="ReviewersMvc" asp-action="Index">All Reviewers</a>
+</div>
+
+@await Html.PartialAsync("_ObjectTable", Model)
