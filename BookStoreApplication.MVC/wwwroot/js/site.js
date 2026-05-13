@@ -1,4 +1,17 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+document.addEventListener("DOMContentLoaded", () => {
+  const filterPanel = document.querySelector("#bookFilterPanel");
+  const toggles = document.querySelectorAll("[data-filter-toggle]");
+  const navToggle = document.querySelector("[data-nav-toggle]");
+  const navMenu = document.querySelector("[data-nav-menu]");
 
-// Write your JavaScript code.
+  toggles.forEach((toggle) => {
+    toggle.addEventListener("click", () => {
+      filterPanel?.classList.toggle("is-open");
+    });
+  });
+
+  navToggle?.addEventListener("click", () => {
+    const isOpen = navMenu?.classList.toggle("is-open") ?? false;
+    navToggle.setAttribute("aria-expanded", isOpen.toString());
+  });
+});

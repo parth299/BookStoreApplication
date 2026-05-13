@@ -9,7 +9,7 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Guest,RegisteredUser,StoreOwner,Admin")]
+    //[Authorize(Roles = "Guest,RegisteredUser,StoreOwner,Admin")]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _service;

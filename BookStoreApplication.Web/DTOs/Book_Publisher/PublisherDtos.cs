@@ -32,4 +32,3 @@ public class PublisherDetailsDto
     public string? StateName { get; set; }
     public IReadOnlyList<BookResponseDto> Books { get; set; } = [];
 }
-

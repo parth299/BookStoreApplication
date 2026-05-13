@@ -1,0 +1,37 @@
+@model BookDetailViewModel
+@{
+    ViewData["Title"] = Model.Book.Title;
+}
+
+<section class="catalog-heading">
+    <div>
+        <p class="catalog-kicker">Book Details</p>
+        <h1>@Model.Book.Title</h1>
+    </div>
+    <div class="catalog-actions">
+        <a class="catalog-button catalog-button--ghost" asp-action="Index">Back</a>
+        @if (Model.CanManageCatalog)
+        {
+            <a class="catalog-button catalog-button--primary" asp-action="Edit" asp-route-isbn="@Model.Book.Isbn">Edit Book</a>
+        }
+    </div>
+</section>
+
+<section class="detail-panel">
+    <div>
+        <h2>Description</h2>
+        <p>@(string.IsNullOrWhiteSpace(Model.Book.Description) ? "No description added yet." : Model.Book.Description)</p>
+    </div>
+    <dl class="detail-list">
+        <dt>Publisher</dt>
+        <dd>@(Model.Book.PublisherName ?? "Unknown publisher")</dd>
+        <dt>Edition</dt>
+        <dd>@(Model.Book.Edition ?? "Standard edition")</dd>
+        <dt>Category</dt>
+        <dd>@Model.CategoryName</dd>
+    </dl>
+    <div class="catalog-actions catalog-actions--spaced">
+        <a class="catalog-button catalog-button--ghost-success" asp-controller="Review" asp-action="Create" asp-route-isbn="@Model.Book.Isbn">Add Review</a>
+        <a class="catalog-button catalog-button--success" asp-controller="ShoppingCart" asp-action="Add" asp-route-isbn="@Model.Book.Isbn">Add to Cart</a>
+    </div>
+</section>
