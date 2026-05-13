@@ -1,28 +1,12 @@
-using BookStoreApplication.MVC.Data;
-using BookStoreApplication.MVC.DTOs.ReviewsAndRatings;
-using BookStoreApplication.MVC.Repositories.ReviewAndRatings;
-using BookStoreApplication.MVC.Services.Reviews_Ratings;
-using BookStoreApplication.MVC.Validators.RatingAndReviewers;
-using FluentValidation;
-using FluentValidation.AspNetCore;
-using Microsoft.EntityFrameworkCore;
+using BookStoreApplication.MVC.Configuration;
+using BookStoreApplication.MVC.Services;
+using BookStoreApplication.MVC.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
-
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("BookDB")));
-
-builder.Services.AddScoped<IBookReviewRepository, BookReviewRepository>();
-builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
-builder.Services.AddScoped<IBookReviewService, BookReviewService>();
-builder.Services.AddScoped<IReviewerService, ReviewerService>();
-
-builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddScoped<IValidator<CreateReviewRequestDto>, CreateReviewRequestDtoValidator>();
-builder.Services.AddScoped<IValidator<CreateReviewerRequestDto>, CreateReviewerRequestDtoValidator>();
-builder.Services.AddScoped<IValidator<UpdateReviewRequestDto>, UpdateReviewRequestDtoValidator>();
 
 var app = builder.Build();
 
@@ -35,7 +19,9 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+
 app.UseAuthorization();
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",

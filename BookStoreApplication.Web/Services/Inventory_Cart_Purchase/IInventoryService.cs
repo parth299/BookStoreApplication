@@ -4,7 +4,7 @@ namespace BookStoreApplication.Web.Services.Inventory_Cart_Purchase
 {
     public interface IInventoryService
     {
-        Task<int> CreateAsync(InventoryDto dto);
+        Task<int> CreateAsync(CreateInventoryDto dto);
         Task PatchAsync(int id,InventoryPatchDto dto);
         Task<IEnumerable<InventoryDto>>GetAllAsync(string? isbn);
         Task<InventoryDto> GetByIdAsync(int id);
