@@ -1,0 +1,43 @@
+@model BookStoreApplication.MVC.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="auth-container animate-fade-in">
+    <div class="glass-card" style="width: 100%; max-width: 400px;">
+        <h2 class="text-center page-header">Welcome Back</h2>
+        <p class="text-center text-muted mb-4">Please enter your details to sign in</p>
+
+        <form asp-action="Login" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+            
+            <div class="mb-3">
+                <label asp-for="UserName" class="form-label text-secondary small fw-bold"></label>
+                <input asp-for="UserName" class="form-control" placeholder="Enter username" />
+                <span asp-validation-for="UserName" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label text-secondary small fw-bold"></label>
+                <input asp-for="Password" class="form-control" placeholder="••••••••" />
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <div class="form-check mb-4">
+                <input class="form-check-input" asp-for="RememberMe" />
+                <label class="form-check-label text-muted small" asp-for="RememberMe"></label>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 mb-3">Sign In</button>
+            
+            <p class="text-center small text-muted">
+                Don't have an account? <a asp-action="Register" class="text-primary fw-bold text-decoration-none">Register here</a>
+            </p>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

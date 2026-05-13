@@ -1,0 +1,73 @@
+@model BookStoreApplication.MVC.Models.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="auth-container animate-fade-in">
+    <div class="glass-card" style="width: 100%; max-width: 500px;">
+        <h2 class="text-center page-header">Create Account</h2>
+        <p class="text-center text-muted mb-4">Join our bookstore community today</p>
+
+        <form asp-action="Register" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="FirstName" class="form-label text-secondary small fw-bold"></label>
+                    <input asp-for="FirstName" class="form-control" placeholder="First name" />
+                    <span asp-validation-for="FirstName" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="LastName" class="form-label text-secondary small fw-bold"></label>
+                    <input asp-for="LastName" class="form-control" placeholder="Last name" />
+                    <span asp-validation-for="LastName" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="UserName" class="form-label text-secondary small fw-bold"></label>
+                <input asp-for="UserName" class="form-control" placeholder="Choose a username" />
+                <span asp-validation-for="UserName" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="PhoneNumber" class="form-label text-secondary small fw-bold"></label>
+                <input asp-for="PhoneNumber" class="form-control" placeholder="Phone number" />
+                <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label text-secondary small fw-bold"></label>
+                <input asp-for="Password" class="form-control" placeholder="••••••••" />
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ConfirmPassword" class="form-label text-secondary small fw-bold"></label>
+                <input asp-for="ConfirmPassword" class="form-control" placeholder="••••••••" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="RoleNumber" class="form-label text-secondary small fw-bold"></label>
+                <select asp-for="RoleNumber" class="form-select">
+                    <option value="1">Registered User</option>
+                    <option value="2">Store Owner</option>
+                    <option value="3">Admin</option>
+                </select>
+                <span asp-validation-for="RoleNumber" class="text-danger small"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 mb-3">Create Account</button>
+            
+            <p class="text-center small text-muted">
+                Already have an account? <a asp-action="Login" class="text-primary fw-bold text-decoration-none">Sign In</a>
+            </p>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
