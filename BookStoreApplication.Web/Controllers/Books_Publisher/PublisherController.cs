@@ -4,83 +4,89 @@ using BookStoreApplication.Web.Wrappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BookStoreApplication.Web.Controllers.Books_Publisher;
-
-[ApiController]
-[Route("publishers")]
-//[Authorize(Roles = "Guest,RegisteredUser,StoreOwner,Admin")]
-public class PublishersController : ControllerBase
+namespace BookStoreApplication.Web.Controllers.Books_Publisher
 {
-    private readonly IPublisherService _publisherService;
-
-    public PublishersController(IPublisherService publisherService)
+    [ApiController]
+    [Route("publishers")]
+    [Authorize(Roles = "User,RegisteredUser,Manager,StoreOwner,Admin")]
+    public class PublishersController : ControllerBase
     {
-        _publisherService = publisherService;
-    }
+        private readonly IPublisherService _publisherService;
 
-    [Authorize(Roles = "StoreOwner,Admin")]
-    [HttpPost]
-    public async Task<ActionResult<ApiResponse<PublisherResponseDto>>> Create(PublisherCreateDto dto)
-    {
-        var created = await _publisherService.CreateAsync(dto);
+        public PublishersController(IPublisherService publisherService)
+        {
+            _publisherService = publisherService;
+        }
 
-        var response = ApiResponse<PublisherResponseDto>.SuccessResponse(
-            created,
-            "Publisher created successfully.",
-            StatusCodes.Status201Created);
+        [HttpPost]
+        [Authorize(Roles = "Manager,StoreOwner,Admin")]
+        public async Task<ActionResult<ApiResponse<PublisherResponseDto>>> Create(
+            PublisherCreateDto dto)
+        {
+            var created = await _publisherService.CreateAsync(dto);
 
-        return CreatedAtAction(
-            nameof(GetAll),
-            new { id = created.PublisherId },
-            response);
-    }
+            var response = ApiResponse<PublisherResponseDto>.SuccessResponse(
+                created,
+                "Publisher created successfully.",
+                StatusCodes.Status201Created);
 
-    [HttpGet]
-    public async Task<ActionResult<ApiResponse<IReadOnlyList<PublisherResponseDto>>>> GetAll()
-    {
-        var publishers = await _publisherService.GetAllAsync();
+            return CreatedAtAction(
+                nameof(GetDetailsById),
+                new { id = created.PublisherId },
+                response);
+        }
 
-        return Ok(
-            ApiResponse<IReadOnlyList<PublisherResponseDto>>.SuccessResponse(
-                publishers,
-                "Publishers fetched successfully.",
-                StatusCodes.Status200OK));
-    }
+        [HttpGet]
+        public async Task<ActionResult<ApiResponse<IReadOnlyList<PublisherResponseDto>>>> GetAll()
+        {
+            var publishers = await _publisherService.GetAllAsync();
 
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult<ApiResponse<PublisherDetailsDto>>> GetDetailsById(int id)
-    {
-        var publisher = await _publisherService.GetDetailsByIdAsync(id);
+            return Ok(
+                ApiResponse<IReadOnlyList<PublisherResponseDto>>.SuccessResponse(
+                    publishers,
+                    "Publishers fetched successfully.",
+                    StatusCodes.Status200OK));
+        }
 
-        return Ok(
-            ApiResponse<PublisherDetailsDto>.SuccessResponse(
-                publisher,
-                "Publisher details fetched successfully.",
-                StatusCodes.Status200OK));
-    }
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<ApiResponse<PublisherDetailsDto>>> GetDetailsById(
+            int id)
+        {
+            var publisher = await _publisherService.GetDetailsByIdAsync(id);
 
-    [HttpGet("by-name/{name}")]
-    public async Task<ActionResult<ApiResponse<IReadOnlyList<PublisherDetailsDto>>>> GetByName(string name)
-    {
-        var publishers = await _publisherService.GetByNameAsync(name);
+            return Ok(
+                ApiResponse<PublisherDetailsDto>.SuccessResponse(
+                    publisher,
+                    "Publisher details fetched successfully.",
+                    StatusCodes.Status200OK));
+        }
 
-        return Ok(
-            ApiResponse<IReadOnlyList<PublisherDetailsDto>>.SuccessResponse(
-                publishers,
-                "Publisher details fetched successfully.",
-                StatusCodes.Status200OK));
-    }
+        [HttpGet("by-name/{name}")]
+        public async Task<ActionResult<ApiResponse<IReadOnlyList<PublisherDetailsDto>>>> GetByName(
+            string name)
+        {
+            var publishers = await _publisherService.GetByNameAsync(name);
 
-    [Authorize(Roles = "StoreOwner,Admin")]
-    [HttpPut("{id:int}")]
-    public async Task<ActionResult<ApiResponse<PublisherResponseDto>>> Update(int id, PublisherUpdateDto dto)
-    {
-        var updated = await _publisherService.UpdateAsync(id, dto);
+            return Ok(
+                ApiResponse<IReadOnlyList<PublisherDetailsDto>>.SuccessResponse(
+                    publishers,
+                    "Publisher details fetched successfully.",
+                    StatusCodes.Status200OK));
+        }
 
-        return Ok(
-            ApiResponse<PublisherResponseDto>.SuccessResponse(
-                updated,
-                "Publisher updated successfully.",
-                StatusCodes.Status200OK));
+        [HttpPut("{id:int}")]
+        [Authorize(Roles = "Manager,StoreOwner,Admin")]
+        public async Task<ActionResult<ApiResponse<PublisherResponseDto>>> Update(
+            int id,
+            PublisherUpdateDto dto)
+        {
+            var updated = await _publisherService.UpdateAsync(id, dto);
+
+            return Ok(
+                ApiResponse<PublisherResponseDto>.SuccessResponse(
+                    updated,
+                    "Publisher updated successfully.",
+                    StatusCodes.Status200OK));
+        }
     }
 }

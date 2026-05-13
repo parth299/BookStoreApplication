@@ -1,9 +1,9 @@
-using System.Collections.Generic;
+using BookStoreApplication.MVC.DTOs.User;
 
 namespace BookStoreApplication.MVC.Models
 {
     public class UserListViewModel
     {
-        public List<UserDto> Users { get; set; } = new List<UserDto>();
+        public List<UserResponseDTO> Users { get; set; } = new();
     }
 }

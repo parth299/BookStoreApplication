@@ -1,0 +1,15 @@
+@model BookStoreApplication.MVC.DTOs.Book_Publisher.BookUpdateDto
+@{ ViewData["Title"] = "Edit Book"; }
+<section class="page-hero"><div class="position-relative"><h1>Edit book details.</h1><p>Keep catalogue data clean with controlled publisher and category dropdowns.</p></div></section>
+<div class="form-card">
+<form asp-action="Edit" method="post" class="row g-3">
+    <div asp-validation-summary="All" class="alert alert-danger border-0 rounded-4"></div>
+    <div class="col-md-6"><label asp-for="Title" class="form-label">Title</label><input asp-for="Title" class="form-control" /></div>
+    <div class="col-md-6"><label asp-for="Edition" class="form-label">Edition</label><input asp-for="Edition" class="form-control" /></div>
+    <div class="col-md-6"><label asp-for="Category" class="form-label">Category</label><select asp-for="Category" asp-items="ViewBag.Categories" class="form-select"><option value="">Select category</option></select></div>
+    <div class="col-md-6"><label asp-for="PublisherId" class="form-label">Publisher</label><select asp-for="PublisherId" asp-items="ViewBag.Publishers" class="form-select"><option value="">Select publisher</option></select></div>
+    <div class="col-12"><label asp-for="Description" class="form-label">Description</label><textarea asp-for="Description" rows="5" class="form-control"></textarea></div>
+    <div class="col-12 d-flex gap-2"><button class="btn btn-primary">Update Book</button><a asp-action="Index" class="btn btn-soft">Cancel</a></div>
+</form>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

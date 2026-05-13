@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using BookStoreApplication.Web.Wrappers;
 using BookStoreApplication.Web.Filters;
 using BookStoreApplication.Web.DTOs.Category;
-using Microsoft.AspNetCore.Authorization;
 using BookStoreApplication.Web.Services.Author_Category;
 
 namespace BookStoreApplication.Web.Controllers.Author_Category
 {
     [ApiController]
     [Route("api/[controller]")]
-    //[Authorize(Roles = "Guest,RegisteredUser,StoreOwner,Admin")]
+    [Authorize(Roles = "User,RegisteredUser,Manager,StoreOwner,Admin")]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _service;
@@ -19,8 +19,8 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
             _service = service;
         }
 
-        [Authorize(Roles = "StoreOwner,Admin")]
         [HttpPost]
+        [Authorize(Roles = "Manager,StoreOwner,Admin")]
         public async Task<ActionResult<ApiResponse<CategoryResponseDto>>> Create(
             CategoryRequestDto dto)
         {
@@ -65,8 +65,8 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
             return StatusCode(response.StatusCode, response);
         }
 
-        [Authorize(Roles = "StoreOwner,Admin")]
         [HttpPut("{id:int:min(1)}")]
+        [Authorize(Roles = "Manager,StoreOwner,Admin")]
         public async Task<ActionResult<ApiResponse<CategoryResponseDto>>> Update(
             int id,
             CategoryRequestDto dto)
@@ -100,8 +100,8 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
             return StatusCode(response.StatusCode, response);
         }
 
-        [Authorize(Roles = "StoreOwner,Admin")]
         [HttpDelete("{id:int:min(1)}")]
+        [Authorize(Roles = "Manager,StoreOwner,Admin")]
         public async Task<ActionResult<ApiResponse<bool>>> Delete(
             int id)
         {

@@ -7,7 +7,7 @@ namespace BookStoreApplication.Web.Controllers.Auth
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "RegisteredUser,StoreOwner,Admin")]
+    [Authorize(Roles = "User,RegisteredUser,Manager,StoreOwner,Admin")]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;

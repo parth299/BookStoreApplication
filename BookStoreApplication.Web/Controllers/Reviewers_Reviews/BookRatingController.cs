@@ -6,7 +6,7 @@ namespace BookStoreApplication.Web.Controllers.Reviewers_Reviews
 {
     [Route("api/books")]
     [ApiController]
-    [Authorize(Roles = "Guest,RegisteredUser,StoreOwner,Admin")]
+    [Authorize(Roles = "User,RegisteredUser,Manager,StoreOwner,Admin")]
     public class BookRatingController : ControllerBase
     {
         private readonly IBookReviewService _bookReviewService;

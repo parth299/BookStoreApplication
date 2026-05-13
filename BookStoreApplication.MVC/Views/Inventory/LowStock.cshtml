@@ -1,0 +1,4 @@
+@model IEnumerable<BookStoreApplication.MVC.DTOs.Inventory.LowStockDto>
+@{ ViewData["Title"]="Low Stock"; var items = Model?.ToList() ?? new List<BookStoreApplication.MVC.DTOs.Inventory.LowStockDto>(); }
+<section class="page-hero"><div class="position-relative"><h1>Low stock alerts.</h1><p>Books with fewer than five available copies.</p></div></section>
+<div class="table-card"><table class="table"><thead><tr><th>ISBN</th><th>Available Copies</th><th>Status</th></tr></thead><tbody>@foreach(var i in items){<tr><td>@i.ISBN</td><td>@i.AvailableCopies</td><td><span class="badge text-bg-warning">Restock soon</span></td></tr>}</tbody></table></div>

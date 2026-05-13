@@ -1,37 +1,145 @@
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
+    var isLoggedIn = User.Identity?.IsAuthenticated == true;
 }
 
-<div class="py-5 animate-fade-in">
-    <div class="glass-card text-center py-5">
+<section class="page-hero">
+    <div class="position-relative">
+        <span class="badge rounded-pill text-bg-light text-primary px-3 py-2 mb-3">
+            Advanced MVC Storefront
+        </span>
 
-        <h1 class="display-4 fw-bold mb-3">
-            BookStore Catalog
-        </h1>
+        <h1>Professional bookstore management made simple.</h1>
 
-        <p class="lead text-muted mb-4">
-            Browse books and publishers from the catalog API.
-            Discover your next favorite book in our curated collection.
+        <p>
+            Browse books, manage inventory, organize publishers and categories,
+            handle cart actions, and allow guest reviews through a clean MVC UI
+            connected to your Web API.
         </p>
 
-        <div class="d-flex justify-content-center gap-3">
-
-            <a asp-controller="Book"
-               asp-action="Index"
-               class="btn btn-primary px-4 py-2">
-                Browse Books
+        <div class="hero-actions">
+            <a class="btn btn-light btn-lg rounded-pill px-4"
+               asp-controller="Books"
+               asp-action="Index">
+                Explore Books
             </a>
 
-            @if (User.Identity?.IsAuthenticated != true)
+            @if (!isLoggedIn)
             {
-                <a asp-controller="Account"
-                   asp-action="Register"
-                   class="btn btn-outline-primary px-4 py-2">
+                <a class="btn btn-outline-light btn-lg rounded-pill px-4"
+                   asp-controller="Account"
+                   asp-action="Register">
                     Join Now
                 </a>
+
+                <a class="btn btn-outline-light btn-lg rounded-pill px-4"
+                   asp-controller="Reviews"
+                   asp-action="Create">
+                    Write Guest Review
+                </a>
             }
-
         </div>
+    </div>
+</section>
 
+<section class="stat-grid">
+    <div class="stat-card">
+        <div class="stat-icon">📚</div>
+        <div class="stat-value">Books</div>
+        <div class="stat-label">Search, filter, create, edit</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">📦</div>
+        <div class="stat-value">Stock</div>
+        <div class="stat-label">Inventory and low-stock tracking</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-value">Reviews</div>
+        <div class="stat-label">Guest-friendly review flow</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">🛡️</div>
+        <div class="stat-value">Roles</div>
+        <div class="stat-label">Admin-aware navigation after login</div>
+    </div>
+</section>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="pro-card h-100">
+            <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                <div>
+                    <div class="tiny-label text-primary">USER FLOW</div>
+                    <h2 class="fw-black display-6 mb-2">
+                        Easy navigation for real users
+                    </h2>
+                    <p class="text-muted mb-0">
+                        Dropdowns are used wherever the user should select existing data:
+                        books, categories, publishers, reviewers, condition, and availability.
+                    </p>
+                </div>
+
+                @if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("StoreOwner"))
+                {
+                    <a class="btn btn-primary"
+                       asp-controller="Inventory"
+                       asp-action="Index">
+                        Manage Stock
+                    </a>
+                }
+            </div>
+
+            <div class="row g-3 mt-2">
+                <div class="col-md-4">
+                    <div class="p-3 rounded-4 bg-light">
+                        <strong>1. Browse</strong><br />
+                        <small class="text-muted">
+                            Users discover books through filters.
+                        </small>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="p-3 rounded-4 bg-light">
+                        <strong>2. Review</strong><br />
+                        <small class="text-muted">
+                            Guests can review; logged-in portals stay focused.
+                        </small>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="p-3 rounded-4 bg-light">
+                        <strong>3. Admin</strong><br />
+                        <small class="text-muted">
+                            Roles unlock protected management screens.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="pro-card h-100">
+            <div class="tiny-label text-primary">RUN CHECK</div>
+            <h3 class="fw-bold">Start order</h3>
+
+            <ol class="text-muted mb-4">
+                <li>Run <strong>BookStoreApplication.Web</strong>.</li>
+                <li>Confirm Swagger opens.</li>
+                <li>Run <strong>BookStoreApplication.MVC</strong>.</li>
+            </ol>
+
+            <a class="btn btn-soft w-100"
+               asp-controller="Books"
+               asp-action="TopRated">
+                View Top Rated
+            </a>
+        </div>
     </div>
 </div>
