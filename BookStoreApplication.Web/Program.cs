@@ -9,7 +9,6 @@ using BookStoreApplication.Web.Mapping;
 using BookStoreApplication.Web.Middleware;
 using BookStoreApplication.Web.Repositories.Author;
 using BookStoreApplication.Web.Repositories.Category;
-//using BookStoreApplication.Web.Repositories.Inventory_Cart_Purchase.;
 using BookStoreApplication.Web.Repositories.Inventory_Cart_Purchase;
 
 using BookStoreApplication.Web.Repositories.ReviewAndRatings;
@@ -17,7 +16,6 @@ using BookStoreApplication.Web.Repositories.User;
 using BookStoreApplication.Web.Services.Author_Category;
 using BookStoreApplication.Web.Services.Auth;
 using BookStoreApplication.Web.Services.Inventory_Cart_Purchase;
-//using BookStoreApplication.Web.Services.Inventory_Cart_Purchase.Interfaces;
 
 using BookStoreApplication.Web.Services.Reviews_Ratings;
 using BookStoreApplication.Web.Validators.Author;

@@ -1,27 +1,37 @@
-var builder = WebApplication.CreateBuilder(args);
+//using BookStoreMVC.Services.Api;
+//using BookStoreMVC.Services.Catalog;
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+//var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+//builder.Services.AddControllersWithViews();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
+//builder.Services.AddDistributedMemoryCache();
+//builder.Services.AddSession();
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
+//builder.Services.AddHttpClient("BookStoreAPI", client =>
+//{
+//    client.BaseAddress = new Uri("https://localhost:7092/");
+//    client.DefaultRequestHeaders.Add("Accept", "application/json");
+//});
 
-app.UseRouting();
+//builder.Services.AddScoped<InventoryApiService>();
+//builder.Services.AddScoped<BookApiService>();
+//builder.Services.AddScoped<ShoppingCartApiService>();
+//builder.Services.AddScoped<PurchaseApiService>();
+//builder.Services.AddScoped<ProductCatalogService>();
+//builder.Services.AddScoped<CartDisplayService>();
 
-app.UseAuthorization();
+//var app = builder.Build();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+//app.UseHttpsRedirection();
+//app.UseStaticFiles();
 
-app.Run();
+//app.UseRouting();
+
+//app.UseSession();
+
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=Store}/{action=Index}/{id?}");
+
+//app.Run();
