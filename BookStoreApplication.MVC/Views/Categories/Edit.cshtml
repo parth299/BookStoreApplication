@@ -1,5 +1,0 @@
-@model BookStoreApplication.MVC.DTOs.Category.CategoryRequestDto
-@{ ViewData["Title"]="Edit Category"; }
-<section class="page-hero"><div class="position-relative"><h1>Edit category.</h1><p>Update the label used in book forms.</p></div></section>
-<div class="form-card"><form method="post">@Html.AntiForgeryToken()<div asp-validation-summary="All" class="text-danger"></div><label asp-for="CatDescription" class="form-label">Category name</label><input asp-for="CatDescription" class="form-control mb-3"/><button class="btn btn-primary">Update Category</button> <a asp-action="Index" class="btn btn-soft">Cancel</a></form></div>
-@section Scripts { <partial name="_ValidationScriptsPartial" /> }

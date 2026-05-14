@@ -1,4 +1,0 @@
-@model BookStoreApplication.MVC.DTOs.Book_Publisher.PublisherDetailsDto
-@{ ViewData["Title"]="Publisher Details"; }
-<section class="page-hero"><div class="position-relative"><h1>@Model.Name</h1><p>@Model.City @Model.StateCode @Model.StateName</p></div></section>
-<div class="pro-card"><h3 class="fw-bold mb-3">Published books</h3>@if(Model.Books.Any()){<div class="book-grid">@foreach(var b in Model.Books){<div class="pro-card book-card"><div class="book-cover"><h3>@b.Title</h3><small>@b.Isbn</small></div><div class="book-meta"><a asp-controller="Books" asp-action="Details" asp-route-id="@b.Isbn" class="btn btn-primary btn-sm w-100">Open</a></div></div>}</div>}else{<div class="empty-state">No books found for this publisher.</div>}</div>

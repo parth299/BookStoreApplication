@@ -1,4 +1,0 @@
-@model BookStoreApplication.MVC.DTOs.Book_Publisher.PublisherUpdateDto
-@{ ViewData["Title"]="Edit Publisher"; }
-<section class="page-hero"><div class="position-relative"><h1>Edit publisher.</h1><p>Update publisher information.</p></div></section>
-<div class="form-card"><form method="post" class="row g-3">@Html.AntiForgeryToken()<div asp-validation-summary="All" class="text-danger"></div><div class="col-md-12"><label asp-for="Name" class="form-label">Name</label><input asp-for="Name" class="form-control"/></div><div class="col-md-6"><label asp-for="City" class="form-label">City</label><input asp-for="City" class="form-control"/></div><div class="col-md-6"><label asp-for="StateCode" class="form-label">State Code</label><input asp-for="StateCode" class="form-control"/></div><div class="col-12"><button class="btn btn-primary">Update Publisher</button> <a asp-action="Index" class="btn btn-soft">Cancel</a></div></form></div>

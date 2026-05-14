@@ -1,4 +1,0 @@
-@model BookStoreApplication.MVC.DTOs.Author.AuthorWithBooksResponseDTO
-@{ ViewData["Title"] = "Author Details"; }
-<section class="page-hero"><div class="position-relative"><h1>@Model.FirstName @Model.LastName</h1><p>Author profile and related books.</p></div></section>
-<div class="pro-card"><h3 class="fw-bold mb-3">Books by this author</h3>@if (Model.Books.Any()) { <div class="table-card"><table class="table"><thead><tr><th>ISBN</th><th>Title</th><th></th></tr></thead><tbody>@foreach (var b in Model.Books) { <tr><td>@b.Isbn</td><td><strong>@b.Title</strong></td><td class="text-end"><a asp-controller="Books" asp-action="Details" asp-route-id="@b.Isbn" class="btn btn-soft btn-sm">Open</a></td></tr> }</tbody></table></div> } else { <div class="empty-state">No books linked yet.</div> }</div>

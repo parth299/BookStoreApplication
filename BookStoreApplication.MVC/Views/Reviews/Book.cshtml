@@ -1,4 +1,0 @@
-@model IEnumerable<BookStoreApplication.MVC.DTOs.ReviewsAndRatings.BookReviewDto>
-@{ ViewData["Title"]="Book Reviews"; var items = Model?.ToList() ?? new List<BookStoreApplication.MVC.DTOs.ReviewsAndRatings.BookReviewDto>(); }
-<section class="page-hero"><div class="position-relative"><h1>Reviews for @ViewBag.Isbn</h1><p>All reviewer feedback for this book.</p></div></section>
-<div class="row g-4">@foreach(var r in items){<div class="col-md-6"><div class="pro-card"><div class="rating-stars mb-2">@(new string('★', Math.Max(1, r.Rating ?? 1)))</div><h4>@r.ReviewerName</h4><p class="text-muted">@r.Comments</p></div></div>}</div>
