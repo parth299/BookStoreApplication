@@ -1,0 +1,61 @@
+@model IEnumerable<AuthorResponseDTO>
+
+@{
+    ViewData["Title"] = "Search Authors";
+}
+
+<h1>Search Authors</h1>
+
+<form asp-action="Search" method="get" class="mb-4">
+    <div class="input-group">
+        <input type="text" name="name" class="form-control" placeholder="Search by first or last name..." value="@Context.Request.Query["name"]" />
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+</form>
+
+@if (Model.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Author ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Photo</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.AuthorId</td>
+                    <td>@item.FirstName</td>
+                    <td>@item.LastName</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.Photo))
+                        {
+                            <img src="@item.Photo" alt="Photo" width="60" height="60" class="img-thumbnail" />
+                        }
+                        else
+                        {
+                            <span class="text-muted">No photo</span>
+                        }
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.AuthorId">Details</a>
+                        <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.AuthorId">Edit</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="text-muted">No authors found matching your search.</p>
+}
+
+<div>
+    <a class="btn btn-secondary" asp-action="Index">Back to List</a>
+</div>

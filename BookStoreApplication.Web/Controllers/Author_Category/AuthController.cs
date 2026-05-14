@@ -10,8 +10,9 @@ using Microsoft.AspNetCore.Authorization;
 namespace BookStoreApplication.Web.Controllers.Author_Category
 {
     [ApiController]
-    [Route("api/[controller]")]
-    [Authorize(Roles = "Guest,RegisteredUser,StoreOwner,Admin")]
+    [Route("api/authors")]
+    [Route("api/author")]
+    [AllowAnonymous]
     public class AuthorController : ControllerBase
     {
         private readonly IAuthorService _service;
@@ -25,7 +26,6 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
             _fileUploadService = fileUploadService;
         }
 
-        [Authorize(Roles = "StoreOwner,Admin")]
         [HttpPost]
         [ServiceFilter(typeof(LogActionFilter))]
         public async Task<ActionResult<ApiResponse<AuthorResponseDTO>>> Create(
@@ -41,15 +41,15 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
                 var response = ApiResponse<AuthorResponseDTO>
                     .FailResponse("Validation failed", 400, errors);
 
-                return StatusCode(response.StatusCode, response);
+                return BadRequest(response);
             }
 
             var result = await _service.CreateAsync(dto);
 
             var success = ApiResponse<AuthorResponseDTO>
-                .SuccessResponse(result, "Author created", 201);
+                .SuccessResponse(result, "Author created", 200);
 
-            return StatusCode(success.StatusCode, success);
+            return Ok(success);
         }
 
         [HttpGet]
@@ -61,7 +61,7 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
             var response = ApiResponse<IEnumerable<AuthorResponseDTO>>
                 .SuccessResponse(result, "Authors fetched successfully.", 200);
 
-            return StatusCode(response.StatusCode, response);
+            return Ok(response);
         }
 
         [HttpGet("{id:int:min(1)}")]
@@ -75,16 +75,15 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
                 var notFound = ApiResponse<AuthorResponseDTO>
                     .NotFound($"Author {id} not found");
 
-                return StatusCode(notFound.StatusCode, notFound);
+                return NotFound(notFound);
             }
 
             var response = ApiResponse<AuthorResponseDTO>
                 .SuccessResponse(result, "Author fetched successfully.", 200);
 
-            return StatusCode(response.StatusCode, response);
+            return Ok(response);
         }
 
-        [Authorize(Roles = "StoreOwner,Admin")]
         [HttpPut("{id:int:min(1)}")]
         public async Task<ActionResult<ApiResponse<AuthorResponseDTO>>> Update(
             int id,
@@ -97,13 +96,13 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
                 var notFound = ApiResponse<AuthorResponseDTO>
                     .NotFound($"Author {id} not found");
 
-                return StatusCode(notFound.StatusCode, notFound);
+                return NotFound(notFound);
             }
 
             var response = ApiResponse<AuthorResponseDTO>
                 .SuccessResponse(result, "Author updated", 200);
 
-            return StatusCode(response.StatusCode, response);
+            return Ok(response);
         }
 
         [HttpGet("search")]
@@ -119,7 +118,7 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
             var response = ApiResponse<IEnumerable<AuthorResponseDTO>>
                 .SuccessResponse(result, "Author search completed successfully.", 200);
 
-            return StatusCode(response.StatusCode, response);
+            return Ok(response);
         }
 
         [HttpGet("{id:int:min(1)}/books")]
@@ -133,13 +132,13 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
                 var notFound = ApiResponse<AuthorWithBooksResponseDTO>
                     .NotFound($"Author {id} not found");
 
-                return StatusCode(notFound.StatusCode, notFound);
+                return NotFound(notFound);
             }
 
             var response = ApiResponse<AuthorWithBooksResponseDTO>
                 .SuccessResponse(result, "Author books fetched successfully.", 200);
 
-            return StatusCode(response.StatusCode, response);
+            return Ok(response);
         }
 
         [HttpGet("country/{country:alpha:minlength(2):maxlength(50)}")]
@@ -151,10 +150,9 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
             var response = ApiResponse<IEnumerable<AuthorResponseDTO>>
                 .SuccessResponse(result, "Authors fetched successfully.", 200);
 
-            return StatusCode(response.StatusCode, response);
+            return Ok(response);
         }
 
-        [Authorize(Roles = "StoreOwner,Admin")]
         [HttpPost("{id:int:min(1)}/photo")]
         [Consumes("multipart/form-data")]
         public async Task<ActionResult<ApiResponse<string>>> UploadPhoto(
@@ -166,7 +164,7 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
                 var bad = ApiResponse<string>
                     .BadRequest("No photo file provided");
 
-                return StatusCode(bad.StatusCode, bad);
+                return BadRequest(bad);
             }
 
             var author = await _service.GetByIdAsync(id);
@@ -176,7 +174,7 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
                 var notFound = ApiResponse<string>
                     .NotFound($"Author {id} not found");
 
-                return StatusCode(notFound.StatusCode, notFound);
+                return NotFound(notFound);
             }
 
             try
@@ -195,21 +193,20 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
                 var response = ApiResponse<string>
                     .SuccessResponse(filePath, "Photo uploaded and saved successfully", 200);
 
-                return StatusCode(response.StatusCode, response);
+                return Ok(response);
             }
             catch (InvalidOperationException ex)
             {
                 var bad = ApiResponse<string>.BadRequest(ex.Message);
-                return StatusCode(bad.StatusCode, bad);
+                return BadRequest(bad);
             }
             catch (ArgumentException ex)
             {
                 var bad = ApiResponse<string>.BadRequest(ex.Message);
-                return StatusCode(bad.StatusCode, bad);
+                return BadRequest(bad);
             }
         }
 
-        [Authorize(Roles = "StoreOwner,Admin")]
         [HttpDelete("{id:int:min(1)}/photo")]
         public async Task<ActionResult<ApiResponse<bool>>> DeletePhoto(
             int id)
@@ -221,7 +218,7 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
                 var notFound = ApiResponse<bool>
                     .NotFound($"Author {id} not found");
 
-                return StatusCode(notFound.StatusCode, notFound);
+                return NotFound(notFound);
             }
 
             if (string.IsNullOrEmpty(author.Photo))
@@ -229,7 +226,7 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
                 var bad = ApiResponse<bool>
                     .BadRequest("No photo to delete");
 
-                return StatusCode(bad.StatusCode, bad);
+                return BadRequest(bad);
             }
 
             var deleted =
@@ -244,7 +241,7 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
                     deleted ? "Photo deleted" : "Photo not found on disk",
                     200);
 
-            return StatusCode(response.StatusCode, response);
+            return Ok(response);
         }
     }
 }

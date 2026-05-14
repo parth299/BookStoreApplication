@@ -8,8 +8,9 @@ using BookStoreApplication.Web.Services.Author_Category;
 namespace BookStoreApplication.Web.Controllers.Author_Category
 {
     [ApiController]
-    [Route("api/[controller]")]
-    [Authorize(Roles = "Guest,RegisteredUser,StoreOwner,Admin")]
+    [Route("api/categories")]
+    [Route("api/category")]
+    [AllowAnonymous]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _service;
@@ -19,7 +20,6 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
             _service = service;
         }
 
-        [Authorize(Roles = "StoreOwner,Admin")]
         [HttpPost]
         public async Task<ActionResult<ApiResponse<CategoryResponseDto>>> Create(
             CategoryRequestDto dto)
@@ -29,7 +29,7 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
             var response = ApiResponse<CategoryResponseDto>
                 .SuccessResponse(result, "Category created");
 
-            return StatusCode(response.StatusCode, response);
+            return Ok(response);
         }
 
         [HttpGet]
@@ -41,7 +41,7 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
             var response = ApiResponse<IEnumerable<CategoryResponseDto>>
                 .SuccessResponse(result, "Success");
 
-            return StatusCode(response.StatusCode, response);
+            return Ok(response);
         }
 
         [HttpGet("{id:int:min(1)}")]
@@ -56,16 +56,15 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
                 var notFound = ApiResponse<CategoryResponseDto>
                     .NotFound($"Category {id} not found");
 
-                return StatusCode(notFound.StatusCode, notFound);
+                return NotFound(notFound);
             }
 
             var response = ApiResponse<CategoryResponseDto>
                 .SuccessResponse(result);
 
-            return StatusCode(response.StatusCode, response);
+            return Ok(response);
         }
 
-        [Authorize(Roles = "StoreOwner,Admin")]
         [HttpPut("{id:int:min(1)}")]
         public async Task<ActionResult<ApiResponse<CategoryResponseDto>>> Update(
             int id,
@@ -81,7 +80,7 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
                 var bad = ApiResponse<CategoryResponseDto>
                     .BadRequest("Validation failed", errors);
 
-                return StatusCode(bad.StatusCode, bad);
+                return BadRequest(bad);
             }
 
             var result = await _service.UpdateAsync(id, dto);
@@ -91,16 +90,15 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
                 var notFound = ApiResponse<CategoryResponseDto>
                     .NotFound($"Category {id} not found");
 
-                return StatusCode(notFound.StatusCode, notFound);
+                return NotFound(notFound);
             }
 
             var response = ApiResponse<CategoryResponseDto>
                 .SuccessResponse(result, "Category updated");
 
-            return StatusCode(response.StatusCode, response);
+            return Ok(response);
         }
 
-        [Authorize(Roles = "StoreOwner,Admin")]
         [HttpDelete("{id:int:min(1)}")]
         public async Task<ActionResult<ApiResponse<bool>>> Delete(
             int id)
@@ -112,13 +110,13 @@ namespace BookStoreApplication.Web.Controllers.Author_Category
                 var notFound = ApiResponse<bool>
                     .NotFound($"Category {id} not found");
 
-                return StatusCode(notFound.StatusCode, notFound);
+                return NotFound(notFound);
             }
 
             var response = ApiResponse<bool>
                 .SuccessResponse(true, "Category deleted successfully");
 
-            return StatusCode(response.StatusCode, response);
+            return Ok(response);
         }
     }
 }

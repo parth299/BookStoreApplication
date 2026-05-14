@@ -52,7 +52,11 @@ builder.Host.UseSerilog();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("BookDB")));
+        builder.Configuration.GetConnectionString("BookDB"),
+        sqlOptions => sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 3,
+            maxRetryDelay: TimeSpan.FromSeconds(5),
+            errorNumbersToAdd: null)));
 
 builder.Services.Configure<JwtOptions>(
     builder.Configuration.GetSection("Jwt"));
