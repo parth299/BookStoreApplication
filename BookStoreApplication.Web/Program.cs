@@ -36,6 +36,7 @@ using UserEntity = BookStoreApplication.Web.Models.User;
 using BookStoreApplication.Web.Repositories.Book_Publisher;
 using BookStoreApplication.Web.Services.Book_Publisher;
 using BookStoreApplication.Web.Services.User;
+using BookStoreApplication.Web.Mappings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,9 +56,21 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.Configure<JwtOptions>(
     builder.Configuration.GetSection("Jwt"));
 
-builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<MappingProfile>();
+    cfg.AddProfile<UserProfile>();
+});
 
 builder.Services.AddMemoryCache();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MvcClient", policy => policy
+        .WithOrigins("https://localhost:7000", "http://localhost:5048")
+        .AllowAnyHeader()
+        .AllowAnyMethod());
+});
 
 builder.Services.AddControllers(options =>
 {
@@ -163,7 +176,7 @@ builder.Services.AddScoped<
     IReviewerService,
     ReviewerService>();
 
-builder.Services.AddSingleton<
+builder.Services.AddScoped<
     IReservationService,
     ReservationService>();
 
@@ -295,6 +308,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("MvcClient");
 
 app.UseStaticFiles();
 

@@ -9,7 +9,7 @@ namespace BookStoreApplication.Web.Controllers.CartAndPurchase
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "RegisteredUser,StoreOwner,Admin")]
+    [Authorize(Roles = "User,RegisteredUser,Manager,StoreOwner,Admin")]
     public class ShoppingCartController
         : ControllerBase
     {

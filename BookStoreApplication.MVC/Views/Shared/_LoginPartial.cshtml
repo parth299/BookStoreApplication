@@ -1,0 +1,38 @@
+<ul class="navbar-nav flex-row align-items-center gap-2">
+@if (User.Identity?.IsAuthenticated == true)
+{
+    var isAdmin = User.IsInRole("Admin");
+    var isManager = (User.IsInRole("Manager") || User.IsInRole("StoreOwner")) || User.IsInRole("StoreOwner");
+    <li class="nav-item dropdown">
+        <a class="user-pill dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="avatar">@((User.Identity.Name ?? "U").Substring(0,1).ToUpper())</span>
+            <span class="d-none d-sm-inline">@User.Identity.Name</span>
+            @if (isAdmin) { <span class="role-chip admin">Admin</span> }
+            else if (isManager) { <span class="role-chip manager">Manager</span> }
+            else { <span class="role-chip user">User</span> }
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 p-2">
+            @if (isAdmin)
+            {
+                <li><a class="dropdown-item rounded-3" asp-controller="UserAdmin" asp-action="Index">Users & Roles</a></li>
+            }
+            @if (isAdmin || isManager)
+            {
+                <li><a class="dropdown-item rounded-3" asp-controller="Inventory" asp-action="Index">Inventory</a></li>
+            }
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    @Html.AntiForgeryToken()
+                    <button class="dropdown-item rounded-3 text-danger" type="submit">Logout</button>
+                </form>
+            </li>
+        </ul>
+    </li>
+}
+else
+{
+    <li class="nav-item"><a class="btn btn-soft" asp-controller="Account" asp-action="Login">Login</a></li>
+    <li class="nav-item"><a class="btn btn-primary rounded-pill px-4" asp-controller="Account" asp-action="Register">Register</a></li>
+}
+</ul>

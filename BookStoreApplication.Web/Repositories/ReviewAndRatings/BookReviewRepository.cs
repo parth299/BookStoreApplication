@@ -26,13 +26,21 @@ namespace BookStoreApplication.Web.Repositories.ReviewAndRatings
                 throw new NotFoundException("Book not found.");
             }
 
-            var reviewer = await _context.Reviewers.FirstOrDefaultAsync(x => x.ReviewerId == request.ReviewerId);
+            var reviewerId = request.ReviewerId;
+            if (reviewerId <= 0)
+            {
+                reviewerId = await _context.Reviewers.AnyAsync()
+                    ? await _context.Reviewers.MaxAsync(x => x.ReviewerId) + 1
+                    : 1;
+            }
+
+            var reviewer = await _context.Reviewers.FirstOrDefaultAsync(x => x.ReviewerId == reviewerId);
 
             if (reviewer == null)
             {
                 reviewer = new Reviewer
                 {
-                    ReviewerId = request.ReviewerId,
+                    ReviewerId = reviewerId,
                     Name = request.Name,
                     EmployedBy = request.EmployedBy
                 };
@@ -41,7 +49,7 @@ namespace BookStoreApplication.Web.Repositories.ReviewAndRatings
                 await _context.SaveChangesAsync();
             }
 
-            var reviewExists = await _context.Bookreviews.AnyAsync(x => x.Isbn == request.Isbn && x.ReviewerId == request.ReviewerId);
+            var reviewExists = await _context.Bookreviews.AnyAsync(x => x.Isbn == request.Isbn && x.ReviewerId == reviewer.ReviewerId);
 
             if (reviewExists)
             {

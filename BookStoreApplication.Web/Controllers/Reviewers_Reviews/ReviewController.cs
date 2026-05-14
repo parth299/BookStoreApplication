@@ -7,7 +7,7 @@ namespace BookStoreApplication.Web.Controllers.Reviewers_Reviews
 {
     [Route("api/reviews")]
     [ApiController]
-    [Authorize(Roles = "Guest,RegisteredUser,StoreOwner,Admin")]
+    [AllowAnonymous]
     public class ReviewController : ControllerBase
     {
         private readonly IBookReviewService _bookReviewService;
@@ -17,7 +17,7 @@ namespace BookStoreApplication.Web.Controllers.Reviewers_Reviews
             _bookReviewService = bookReviewService;
         }
 
-        [Authorize(Roles = "RegisteredUser,StoreOwner,Admin")]
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> CreateReviewAsync([FromBody] CreateReviewRequestDto request)
         {
@@ -45,7 +45,7 @@ namespace BookStoreApplication.Web.Controllers.Reviewers_Reviews
             var result = await _bookReviewService.GetBookReviewsByReviewerIdAsync(reviewerId);
             return Ok(result);
         }
-        [Authorize(Roles = "RegisteredUser,StoreOwner,Admin")]
+        [Authorize(Roles = "User,RegisteredUser,Manager,StoreOwner,Admin")]
         [HttpPut("reviews/book/{isbn}/reviewer/{reviewerId:int}")]
         public async Task<IActionResult> UpdateReview(string isbn,int reviewerId,[FromBody] UpdateReviewRequestDto request)
         {

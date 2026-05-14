@@ -7,7 +7,7 @@ namespace BookStoreApplication.Web.Controllers.Auth
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "RegisteredUser,StoreOwner,Admin")]
+    [Authorize(Roles = "User,RegisteredUser,Manager,StoreOwner,Admin")]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -23,12 +23,7 @@ namespace BookStoreApplication.Web.Controllers.Auth
         {
             var response = await _userService.GetUsersByRoleId(roleId);
 
-            if(response is null)
-            {
-                return BadRequest("Cannot fetch users of given role");
-            }
-
-            return Ok(response);
+            return StatusCode(response.StatusCode, response);
         }
 
         [Authorize(Roles = "Admin")]
@@ -36,39 +31,24 @@ namespace BookStoreApplication.Web.Controllers.Auth
         public async Task<IActionResult> GetUsers()
         {
             var response = await _userService.GetUsersAsync();
-            
-            if(response is null)
-            {
-                return BadRequest("Cannot fetch users");
-            }
 
-            return Ok(response);
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpPost("{id}")]
-        public async Task<IActionResult> ChangePassword(int id, string updated_password)
+        public async Task<IActionResult> ChangePassword(int id, string updatedPassword)
         {
-            var response = await _userService.ChangePasswordAsync(id, updated_password);
+            var response = await _userService.ChangePasswordAsync(id, updatedPassword);
 
-            if(response is null)
-            {
-                return BadRequest("User does not exists");
-            }
-            
-            return Ok("User Password Updated");
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
             var response = await _userService.GetUserProfileAsync(id);
-            
-            if(response is null)
-            {
-                return BadRequest("Cannot fetch user profile");
-            }
 
-            return Ok(response);
+            return StatusCode(response.StatusCode, response);
         }
 
         [AllowAnonymous]
@@ -77,12 +57,7 @@ namespace BookStoreApplication.Web.Controllers.Auth
         {
             var response = await _userService.RegisterAsync(request);
 
-            if(response is null)
-            {
-                return BadRequest("User not registered");
-            }
-
-            return Ok("User registered successfully");
+            return StatusCode(response.StatusCode, response);
         }
 
         [AllowAnonymous]
@@ -91,12 +66,7 @@ namespace BookStoreApplication.Web.Controllers.Auth
         {
             var response = await _userService.LoginAsync(request);
 
-            if (!response.Success)
-            {
-                return BadRequest(response);
-            }
-
-            return Ok(response);
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpPut]
@@ -104,12 +74,7 @@ namespace BookStoreApplication.Web.Controllers.Auth
         {
             var response = await _userService.UpdateUserAsync(request);
 
-            if(response is null)
-            {
-                return BadRequest("Update user failed");
-            }
-
-            return Ok(request);
+            return StatusCode(response.StatusCode, response);
         }
     }
 }

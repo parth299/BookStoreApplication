@@ -1,0 +1,4 @@
+@model IEnumerable<BookStoreApplication.MVC.DTOs.User.UserResponseDTO>
+@{ ViewData["Title"]="Users & Roles"; var items = Model?.ToList() ?? new List<BookStoreApplication.MVC.DTOs.User.UserResponseDTO>(); }
+<section class="page-hero"><div class="position-relative"><h1>Users & roles.</h1><p>Admin-facing users list from the Web API.</p></div></section>
+<div class="table-card"><table class="table"><thead><tr><th>User</th><th>Phone</th><th>Role</th></tr></thead><tbody>@foreach(var u in items){<tr><td><strong>@u.FirstName @u.LastName</strong><br/><small class="text-muted">@u.UserName</small></td><td>@u.PhoneNumber</td><td><span class="badge badge-soft">@(string.IsNullOrWhiteSpace(u.RoleName) ? $"Role {u.RoleNumber}" : u.RoleName)</span></td></tr>}</tbody></table></div>

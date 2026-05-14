@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.5.11723.231
+VisualStudioVersion = 18.5.11723.231 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookStoreApplication.Web", "BookStoreApplication.Web\BookStoreApplication.Web.csproj", "{4AC2C351-245C-4281-AED5-04AD4E9C755D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookStoreApplication.MVC", "BookStoreApplication.MVC\BookStoreApplication.MVC.csproj", "{4319156B-8E17-4554-A868-EA577F028651}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookStoreApplication.Tests", "BookStoreApplication.Tests\BookStoreApplication.Tests.csproj", "{F5CD15F6-BC5A-4380-8749-A1F32DF9AED5}"
 EndProject
@@ -17,6 +19,10 @@ Global
 		{4AC2C351-245C-4281-AED5-04AD4E9C755D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4AC2C351-245C-4281-AED5-04AD4E9C755D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4AC2C351-245C-4281-AED5-04AD4E9C755D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4319156B-8E17-4554-A868-EA577F028651}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4319156B-8E17-4554-A868-EA577F028651}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4319156B-8E17-4554-A868-EA577F028651}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4319156B-8E17-4554-A868-EA577F028651}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F5CD15F6-BC5A-4380-8749-A1F32DF9AED5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F5CD15F6-BC5A-4380-8749-A1F32DF9AED5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5CD15F6-BC5A-4380-8749-A1F32DF9AED5}.Release|Any CPU.ActiveCfg = Release|Any CPU

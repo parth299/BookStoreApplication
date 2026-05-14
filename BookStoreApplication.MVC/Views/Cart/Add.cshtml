@@ -1,0 +1,19 @@
+@model BookStoreApplication.MVC.DTOs.Inventory.CartItemDto
+@{ ViewData["Title"]="Add to Cart"; }
+<section class="page-hero compact">
+    <div class="position-relative">
+        <span class="tiny-label d-block mb-2">Basket Builder</span>
+        <h1>Add cart item.</h1>
+        <p>Select a book from the API-backed dropdown and add it to the customer basket.</p>
+    </div>
+</section>
+<div class="form-card">
+    <form method="post" class="row g-3">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="col-md-4"><label asp-for="UserId" class="form-label">User ID</label><input asp-for="UserId" class="form-control"/></div>
+        <div class="col-md-5"><label asp-for="ISBN" class="form-label">Book</label><select asp-for="ISBN" asp-items="ViewBag.Books" class="form-select"><option value="">Select book</option></select></div>
+        <div class="col-md-3"><label asp-for="Quantity" class="form-label">Quantity</label><input asp-for="Quantity" class="form-control" min="1"/></div>
+        <div class="col-12 d-flex gap-2 flex-wrap"><button class="btn btn-primary">Add to Cart</button> <a asp-action="Index" asp-route-userId="@Model.UserId" class="btn btn-glass">Cancel</a></div>
+    </form>
+</div>
