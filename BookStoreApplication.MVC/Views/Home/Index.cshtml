@@ -1,0 +1,168 @@
+@{
+    ViewData["Title"] = "Home";
+    var isLoggedIn = User.Identity?.IsAuthenticated == true;
+}
+
+<section class="page-hero" style="background-image: url('/images/ui/lumina_books_home_image_1.png');">
+    <div class="hero-panel glass-card">
+        <span class="tiny-label d-block mb-3">Editor's Collection</span>
+
+        <h1>Discover, collect, and manage books beautifully.</h1>
+
+        <p>
+            Explore a completely refreshed Lumina-style bookstore experience connected to your
+            ASP.NET Web API backend. Browse books, add items to cart from the floating icon flow,
+            manage stock, and complete purchase logs.
+        </p>
+
+        <div class="hero-actions">
+            <a class="btn btn-primary btn-lg" asp-controller="Books" asp-action="Index">
+                Explore Books
+            </a>
+
+            <a class="btn btn-glass btn-lg" asp-controller="Books" asp-action="TopRated">
+                Top Rated
+            </a>
+
+            @if (!isLoggedIn)
+            {
+                <a class="btn btn-gold btn-lg" asp-controller="Reviews" asp-action="Create">
+                    Write Guest Review
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="stat-grid">
+    <div class="stat-card">
+        <img src="~/images/books-card.jpg" class="stat-image" alt="Books collection" />
+        <div class="stat-icon">
+            <span class="material-symbols-outlined">auto_stories</span>
+        </div>
+        <div class="stat-value">Books</div>
+        <div class="stat-label">Search, view, create, and edit titles.</div>
+    </div>
+
+    <div class="stat-card">
+        <img src="~/images/stock-card.jpg" class="stat-image" alt="Book inventory" />
+        <div class="stat-icon">
+            <span class="material-symbols-outlined">inventory_2</span>
+        </div>
+        <div class="stat-value">Stock</div>
+        <div class="stat-label">Track condition, availability, and low stock.</div>
+    </div>
+
+    <div class="stat-card">
+        <img src="~/images/cart-card.jpg" class="stat-image" alt="Shopping cart" />
+        <div class="stat-icon">
+            <span class="material-symbols-outlined">shopping_basket</span>
+        </div>
+        <div class="stat-value">Cart</div>
+        <div class="stat-label">Cart is now a working corner icon.</div>
+    </div>
+
+    <div class="stat-card">
+        <img src="~/images/logs-card.jpg" class="stat-image" alt="Purchase logs" />
+        <div class="stat-icon">
+            <span class="material-symbols-outlined">receipt_long</span>
+        </div>
+        <div class="stat-value">Logs</div>
+        <div class="stat-label">Checkout posts to purchase logs.</div>
+    </div>
+</section>
+
+<div class="section-heading">
+    <div>
+        <span class="tiny-label">Storefront Flow</span>
+        <h2 class="display-5 mb-1">Mapped to your project needs</h2>
+        <p class="text-muted mb-0">
+            The MVC project remains the frontend. The Web project remains the backend API.
+        </p>
+    </div>
+
+    <a class="btn btn-glass" asp-controller="Books" asp-action="Index">
+        View Collection
+    </a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="pro-card h-100">
+            <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-4">
+                <div>
+                    <span class="tiny-label">Reading Room</span>
+                    <h2 class="fw-black display-6 mb-2">
+                        A new interface without losing existing functionality.
+                    </h2>
+                    <p class="text-muted mb-0">
+                        Navigation is cleaner, the cart is separated into a floating right-corner icon,
+                        and backend-backed pages still use the same controllers and services.
+                    </p>
+                </div>
+
+                <a class="btn btn-primary" asp-controller="Inventory" asp-action="Index">
+                    Manage Inventory
+                </a>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="flow-card">
+                        <img src="~/images/browse-step.jpg" class="flow-image" alt="Browse books" />
+                        <strong>1. Browse</strong>
+                        <br />
+                        <small class="text-muted">
+                            Search and filter books from the API-backed collection.
+                        </small>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="flow-card">
+                        <img src="~/images/add-step.jpg" class="flow-image" alt="Add to cart" />
+                        <strong>2. Add</strong>
+                        <br />
+                        <small class="text-muted">
+                            Use cart screens from the floating basket icon.
+                        </small>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="flow-card">
+                        <img src="~/images/checkout-step.jpg" class="flow-image" alt="Checkout" />
+                        <strong>3. Checkout</strong>
+                        <br />
+                        <small class="text-muted">
+                            Checkout calls PurchaseLog and clears the cart display flow.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="pro-card h-100">
+            <img src="~/images/quick-actions.jpg" class="quick-actions-image" alt="Bookstore quick actions" />
+
+            <span class="tiny-label">Quick Actions</span>
+            <h3 class="fw-black mt-2">Start here</h3>
+
+            <div class="d-grid gap-3 mt-4">
+                <a class="btn btn-primary" asp-controller="Books" asp-action="Index">
+                    Browse Books
+                </a>
+
+                <a class="btn btn-glass" asp-controller="Authors" asp-action="Index">
+                    Meet Authors
+                </a>
+
+                <a class="btn btn-glass" asp-controller="Reviews" asp-action="Index">
+                    Read Reviews
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

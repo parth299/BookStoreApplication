@@ -1,0 +1,121 @@
+@{
+    var isLoggedIn = User.Identity?.IsAuthenticated == true;
+    var isAdmin = User.IsInRole("Admin");
+    var isManager = (User.IsInRole("Manager") || User.IsInRole("StoreOwner"));
+    var canManage = isAdmin || isManager;
+}
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Lumina BookStore</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="lumina-header">
+        <nav class="lumina-nav container-fluid">
+            <a class="lumina-brand" asp-controller="Home" asp-action="Index">
+                <span class="brand-orb">LB</span>
+                <span><strong>Lumina Books</strong><small>MVC Storefront</small></span>
+            </a>
+
+            <button class="btn nav-toggle d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#mobileNav" aria-label="Open navigation">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+
+            <div class="nav-links d-none d-lg-flex">
+                <a asp-controller="Home" asp-action="Index">Explorer</a>
+                <a asp-controller="Books" asp-action="Index">Books</a>
+                <a asp-controller="Authors" asp-action="Index">Authors</a>
+                <a asp-controller="Reviews" asp-action="Index">Reviews</a>
+                @if (canManage)
+                {
+                    <a asp-controller="Inventory" asp-action="Index">Inventory</a>
+                    <a asp-controller="Categories" asp-action="Index">Categories</a>
+                    <a asp-controller="Publishers" asp-action="Index">Publishers</a>
+                }
+                @if (isAdmin)
+                {
+                    <a asp-controller="UserAdmin" asp-action="Index">Users</a>
+                }
+            </div>
+
+            <form class="top-search d-none d-xl-flex" asp-controller="Books" asp-action="Index" method="get">
+                <span class="material-symbols-outlined">search</span>
+                <input name="title" placeholder="Search the collection..." />
+            </form>
+
+            <div class="nav-account d-none d-md-flex">
+                @if (!isLoggedIn)
+                {
+                    <a class="btn btn-glass" asp-controller="Reviews" asp-action="Create">Guest Review</a>
+                }
+                <partial name="_LoginPartial" />
+            </div>
+        </nav>
+    </header>
+
+    @if (isLoggedIn && !canManage)
+    {
+        <a class="floating-cart" asp-controller="Cart" asp-action="Index" asp-route-userId="1" title="Open cart" aria-label="Open cart">
+            <span class="material-symbols-outlined">shopping_basket</span>
+        </a>
+    }
+
+    <div class="offcanvas offcanvas-start lumina-mobile" tabindex="-1" id="mobileNav">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title">Lumina Books</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <nav class="mobile-links">
+                <a asp-controller="Home" asp-action="Index">Explorer</a>
+                <a asp-controller="Books" asp-action="Index">Books</a>
+                <a asp-controller="Authors" asp-action="Index">Authors</a>
+                <a asp-controller="Reviews" asp-action="Index">Reviews</a>
+                @if (!isLoggedIn) { <a asp-controller="Reviews" asp-action="Create">Guest Review</a> }
+                @if (canManage)
+                {
+                    <a asp-controller="Inventory" asp-action="Index">Inventory</a>
+                    <a asp-controller="Categories" asp-action="Index">Categories</a>
+                    <a asp-controller="Publishers" asp-action="Index">Publishers</a>
+                }
+                @if (isAdmin) { <a asp-controller="UserAdmin" asp-action="Index">Users & Roles</a> }
+            </nav>
+        </div>
+    </div>
+
+    <main class="content-wrap">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success border-0 shadow-sm rounded-4">@TempData["Success"]</div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger border-0 shadow-sm rounded-4">@TempData["Error"]</div>
+        }
+        @RenderBody()
+    </main>
+
+    <footer class="lumina-footer">
+        <div class="footer-inner">
+            <div>
+                <div class="footer-brand">Lumina Books</div>
+                <p>A refreshed MVC bookstore UI mapped to your Web API backend, cart flow, inventory controls, reviews, and purchase logs.</p>
+            </div>
+            <div class="footer-status"><span></span> MVC frontend → Web backend</div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,4 @@
+@model IEnumerable<BookStoreApplication.MVC.DTOs.Inventory.InventoryDto>
+@{ ViewData["Title"]="Available Inventory"; var items = Model?.ToList() ?? new List<BookStoreApplication.MVC.DTOs.Inventory.InventoryDto>(); }
+<section class="page-hero"><div class="position-relative"><h1>Available copies.</h1><p>Copies that can be purchased or added to cart.</p></div></section>
+<div class="table-card"><table class="table"><thead><tr><th>ID</th><th>ISBN</th><th>Condition</th></tr></thead><tbody>@foreach(var i in items){<tr><td>#@i.InventoryId</td><td>@i.ISBN</td><td><span class="badge status-available">Condition @i.ConditionRank</span></td></tr>}</tbody></table></div>
