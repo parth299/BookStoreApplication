@@ -1,0 +1,71 @@
+@model BookStoreApplication.MVC.DTOs.Author.AuthorWithBooksResponseDTO
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+
+@{
+    ViewData["Title"] = "Author Details";
+    var apiBaseUrl = Configuration["ApiSettings:BaseUrl"]?.TrimEnd('/');
+
+    string? GetPhotoUrl(string? photo)
+    {
+        if (string.IsNullOrWhiteSpace(photo))
+        {
+            return null;
+        }
+
+        if (Uri.TryCreate(photo, UriKind.Absolute, out _))
+        {
+            return photo;
+        }
+
+        return $"{apiBaseUrl}/{photo.TrimStart('/')}";
+    }
+
+    var photoUrl = GetPhotoUrl(Model.Photo);
+}
+
+<section class="page-hero">
+    <div class="position-relative d-flex align-items-center gap-4 flex-wrap">
+        @if (photoUrl != null)
+        {
+            <img src="@photoUrl" alt="@Model.FirstName @Model.LastName" style="width:112px;height:112px;object-fit:cover;border-radius:50%;" />
+        }
+        <div>
+            <h1>@Model.FirstName @Model.LastName</h1>
+            <p>Author profile and related books.</p>
+        </div>
+    </div>
+</section>
+
+<div class="pro-card">
+    <h3 class="fw-bold mb-3">Books by this author</h3>
+    @if (Model.Books.Any())
+    {
+        <div class="table-card">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ISBN</th>
+                        <th>Title</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var b in Model.Books)
+                {
+                    <tr>
+                        <td>@b.Isbn</td>
+                        <td><strong>@b.Title</strong></td>
+                        <td class="text-end">
+                            <a asp-controller="Books" asp-action="Details" asp-route-id="@b.Isbn" class="btn btn-soft btn-sm">Open</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">No books linked yet.</div>
+    }
+</div>

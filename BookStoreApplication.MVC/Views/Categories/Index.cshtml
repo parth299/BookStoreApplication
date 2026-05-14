@@ -1,0 +1,4 @@
+@model IEnumerable<BookStoreApplication.MVC.DTOs.Category.CategoryResponseDto>
+@{ ViewData["Title"] = "Categories"; var items = Model?.ToList() ?? new List<BookStoreApplication.MVC.DTOs.Category.CategoryResponseDto>(); }
+<section class="page-hero"><div class="position-relative d-flex justify-content-between align-items-end flex-wrap gap-3"><div><h1>Categories.</h1><p>Organize books into clear browsable groups.</p></div><a asp-action="Create" class="btn btn-light rounded-pill px-4">Add Category</a></div></section>
+<div class="book-grid">@foreach (var c in items){<div class="pro-card"><span class="badge badge-soft mb-3">ID @c.CatId</span><h3 class="fw-bold">@c.CatDescription</h3><div class="mt-4 d-flex gap-2"><a asp-action="Edit" asp-route-id="@c.CatId" class="btn btn-primary btn-sm">Edit</a><form asp-action="Delete" asp-route-id="@c.CatId" method="post">@Html.AntiForgeryToken()<button class="btn btn-soft btn-sm text-danger">Delete</button></form></div></div>}</div>

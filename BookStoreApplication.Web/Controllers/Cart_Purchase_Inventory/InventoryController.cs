@@ -9,7 +9,7 @@ namespace BookStoreApplication.Web.Controllers.Cart_Purchase_Inventory
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Guest,RegisteredUser,StoreOwner,Admin")]
+    [Authorize(Roles = "User,RegisteredUser,Manager,StoreOwner,Admin")]
     public class InventoryController
         : ControllerBase
     {
@@ -22,14 +22,14 @@ namespace BookStoreApplication.Web.Controllers.Cart_Purchase_Inventory
             _service = service;
         }
 
-        [Authorize(Roles = "StoreOwner,Admin")]
+        [Authorize(Roles = "Manager,StoreOwner,Admin")]
         [HttpPost]
         //[Authorize(Roles = "Admin")]
         public async Task<IActionResult>
-            Create(InventoryDto dto)
+            Create(CreateInventoryDto createdto)
         {
             var id =
-                await _service.CreateAsync(dto);
+                await _service.CreateAsync(createdto);
             return CreatedAtAction(
                 nameof(GetById),
                 new { id = id },
@@ -39,7 +39,7 @@ namespace BookStoreApplication.Web.Controllers.Cart_Purchase_Inventory
                 ));
         }
 
-        [Authorize(Roles = "StoreOwner,Admin")]
+        [Authorize(Roles = "Manager,StoreOwner,Admin")]
         [HttpPatch("{id}")]
         public async Task<IActionResult>Patch(int id,InventoryPatchDto dto)
         {
@@ -79,7 +79,7 @@ namespace BookStoreApplication.Web.Controllers.Cart_Purchase_Inventory
                 .SuccessResponse(data));
         }
 
-        [Authorize(Roles = "StoreOwner,Admin")]
+        [Authorize(Roles = "Manager,StoreOwner,Admin")]
         [HttpPut("{id}")]
         //[Authorize(Roles = "Admin")]
         public async Task<IActionResult>
@@ -107,7 +107,7 @@ namespace BookStoreApplication.Web.Controllers.Cart_Purchase_Inventory
                 .SuccessResponse(data));
         }
 
-        [Authorize(Roles = "StoreOwner,Admin")]
+        [Authorize(Roles = "Manager,StoreOwner,Admin")]
         [HttpGet("low-stock")]
         public async Task<IActionResult>
             LowStock()

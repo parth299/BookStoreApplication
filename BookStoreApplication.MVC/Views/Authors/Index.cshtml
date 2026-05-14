@@ -1,0 +1,87 @@
+@model IEnumerable<BookStoreApplication.MVC.DTOs.Author.AuthorResponseDTO>
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+
+@{
+    ViewData["Title"] = "Authors";
+    var authors = Model?.ToList() ?? new List<BookStoreApplication.MVC.DTOs.Author.AuthorResponseDTO>();
+    var apiBaseUrl = Configuration["ApiSettings:BaseUrl"]?.TrimEnd('/');
+
+    string? GetPhotoUrl(string? photo)
+    {
+        if (string.IsNullOrWhiteSpace(photo))
+        {
+            return null;
+        }
+
+        if (Uri.TryCreate(photo, UriKind.Absolute, out _))
+        {
+            return photo;
+        }
+
+        return $"{apiBaseUrl}/{photo.TrimStart('/')}";
+    }
+}
+
+<section class="page-hero">
+    <div class="position-relative d-flex justify-content-between align-items-end gap-3 flex-wrap">
+        <div>
+            <h1>Authors.</h1>
+            <p>Search authors by name and manage professional author profiles.</p>
+        </div>
+        <a asp-action="Create" class="btn btn-light rounded-pill px-4">Add Author</a>
+    </div>
+</section>
+
+<div class="pro-card mb-4">
+    <form method="get" class="row g-3 align-items-end">
+        <div class="col-md-5">
+            <label class="form-label">Name</label>
+            <input name="name" class="form-control" placeholder="Search by first or last name" />
+        </div>
+        <div class="col-md-5">
+            <label class="form-label">Country</label>
+            <input name="country" class="form-control" placeholder="Optional country" />
+        </div>
+        <div class="col-md-2 d-grid">
+            <button class="btn btn-primary">Search</button>
+        </div>
+    </form>
+</div>
+
+<div class="table-card">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Author</th>
+                <th>Photo</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var a in authors)
+        {
+            var photoUrl = GetPhotoUrl(a.Photo);
+            <tr>
+                <td>
+                    <strong>@a.FirstName @a.LastName</strong><br />
+                    <small class="text-muted">ID @a.AuthorId</small>
+                </td>
+                <td>
+                    @if (photoUrl != null)
+                    {
+                        <img src="@photoUrl" alt="@a.FirstName @a.LastName" style="width:56px;height:56px;object-fit:cover;border-radius:50%;" />
+                    }
+                    else
+                    {
+                        <span class="text-muted">No photo</span>
+                    }
+                </td>
+                <td class="text-end">
+                    <a asp-action="Details" asp-route-id="@a.AuthorId" class="btn btn-soft btn-sm">Details</a>
+                    <a asp-action="Edit" asp-route-id="@a.AuthorId" class="btn btn-primary btn-sm">Edit</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

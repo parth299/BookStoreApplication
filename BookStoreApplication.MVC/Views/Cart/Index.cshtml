@@ -1,0 +1,60 @@
+@model IEnumerable<BookStoreApplication.MVC.DTOs.Inventory.CartItemDto>
+@{
+    ViewData["Title"] = "Cart";
+    var items = Model?.ToList() ?? new List<BookStoreApplication.MVC.DTOs.Inventory.CartItemDto>();
+}
+<section class="page-hero compact">
+    <div class="position-relative d-flex justify-content-between align-items-end flex-wrap gap-3 w-100">
+        <div>
+            <span class="tiny-label d-block mb-2">Your Basket</span>
+            <h1>Shopping cart.</h1>
+            <p>Review cart items, add new books, remove unwanted titles, clear the basket, or checkout into the purchase log.</p>
+        </div>
+        <a asp-action="Add" asp-route-userId="@ViewBag.UserId" class="btn btn-primary">Add Item</a>
+    </div>
+</section>
+
+<div class="table-card">
+    <table class="table">
+        <thead>
+            <tr><th>User</th><th>ISBN</th><th>Quantity</th><th class="text-end">Action</th></tr>
+        </thead>
+        <tbody>
+        @if (!items.Any())
+        {
+            <tr><td colspan="4"><div class="empty-state">Your cart is empty. Add a book to begin.</div></td></tr>
+        }
+        else
+        {
+            foreach (var i in items)
+            {
+                <tr>
+                    <td><span class="badge status-info">User @i.UserId</span></td>
+                    <td><strong>@i.ISBN</strong></td>
+                    <td>@i.Quantity</td>
+                    <td class="text-end">
+                        <form asp-action="Remove" method="post" asp-route-userId="@i.UserId" asp-route-isbn="@i.ISBN">
+                            @Html.AntiForgeryToken()
+                            <button class="btn btn-soft btn-sm text-danger">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+</div>
+
+@if (items.Any())
+{
+    <div class="d-flex flex-wrap gap-3 mt-4">
+        <form asp-action="Checkout" method="post" asp-route-userId="@ViewBag.UserId">
+            @Html.AntiForgeryToken()
+            <button class="btn btn-primary">Checkout & Create Purchase Log</button>
+        </form>
+        <form asp-action="Clear" method="post" asp-route-userId="@ViewBag.UserId">
+            @Html.AntiForgeryToken()
+            <button class="btn btn-outline-danger rounded-pill px-4">Clear Cart</button>
+        </form>
+    </div>
+}

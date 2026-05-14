@@ -18,7 +18,7 @@ namespace BookStoreApplication.Web.Services.Inventory_Cart_Purchase
             _mapper = mapper;
         }
 
-        public async Task<int> CreateAsync(InventoryDto dto)
+        public async Task<int> CreateAsync(CreateInventoryDto dto)
         {
             if (dto.ConditionRank < 1 || dto.ConditionRank > 6)
             {

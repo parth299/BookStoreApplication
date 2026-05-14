@@ -1,0 +1,83 @@
+@model object
+@using System.Collections
+@using System.Reflection
+
+@functions {
+    IEnumerable<object> AsRows(object? model)
+    {
+        if (model == null) return Enumerable.Empty<object>();
+        if (model is string) return new[] { model };
+        if (model is IEnumerable enumerable) return enumerable.Cast<object>();
+        return new[] { model };
+    }
+
+    IEnumerable<PropertyInfo> DisplayProperties(object row)
+    {
+        return row.GetType()
+            .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            .Where(p => p.GetIndexParameters().Length == 0)
+            .Where(p => p.PropertyType == typeof(string)
+                || p.PropertyType.IsPrimitive
+                || p.PropertyType.IsEnum
+                || p.PropertyType == typeof(decimal)
+                || p.PropertyType == typeof(DateTime)
+                || p.PropertyType == typeof(DateTime?)
+                || Nullable.GetUnderlyingType(p.PropertyType)?.IsPrimitive == true
+                || Nullable.GetUnderlyingType(p.PropertyType) == typeof(decimal));
+    }
+}
+
+@{
+    var rows = AsRows(Model).Where(r => r != null).ToList();
+}
+
+@if (!rows.Any())
+{
+    <div class="alert alert-info">No records found.</div>
+}
+else
+{
+    var properties = DisplayProperties(rows.First()).ToList();
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered align-middle">
+            <thead>
+                <tr>
+                    @foreach (var property in properties)
+                    {
+                        <th>@property.Name</th>
+                    }
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in rows)
+                {
+                    string? isbn = row.GetType().GetProperty("Isbn")?.GetValue(row)?.ToString()
+                        ?? row.GetType().GetProperty("ISBN")?.GetValue(row)?.ToString();
+                    string? reviewerId = row.GetType().GetProperty("ReviewerId")?.GetValue(row)?.ToString();
+
+                    <tr>
+                        @foreach (var property in properties)
+                        {
+                            <td>@(property.GetValue(row) ?? "-")</td>
+                        }
+                        <td class="text-nowrap">
+                            @if (!string.IsNullOrWhiteSpace(isbn))
+                            {
+                                <a class="btn btn-sm btn-outline-primary" asp-controller="Reviews" asp-action="Book" asp-route-isbn="@isbn">Book Reviews</a>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(reviewerId))
+                            {
+                                <a class="btn btn-sm btn-outline-secondary" asp-controller="Reviews" asp-action="Reviewer" asp-route-reviewerId="@reviewerId">Reviewer Reviews</a>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(isbn) && !string.IsNullOrWhiteSpace(reviewerId))
+                            {
+                                <a class="btn btn-sm btn-warning" asp-controller="Reviews" asp-action="Edit" asp-route-isbn="@isbn" asp-route-reviewerId="@reviewerId">Edit</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
